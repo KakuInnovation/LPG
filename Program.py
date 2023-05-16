@@ -1,3 +1,4 @@
+
 #Mostrar Opciones Menu Principal
 def mostrarOpcionesMenuPrincipal():
     for opcion, funcion in opcionesMenuPrincipal.items():
@@ -8,6 +9,7 @@ def mostrarOpcionesMenu(menu):
     for opcion, funcion in menu.items():
         print(f"{opcion}) {funcion['descripcion']}")
     print(f"{len(menu) + 1}) Volver")
+    print(f"{len(menu) + 2}) Menu Principal")
 
 #funcion Descargar Partidos políticos
 def decargarPartidosPoliticos():
@@ -38,7 +40,8 @@ def parametrizacionVer():
 #funcion menu Descarga Archivos
 def mostrarMenuGenerico(menu, titulo):
     salir = False
-    while salir == False:
+    global salirAlMenuPrincipal
+    while salir == False and salirAlMenuPrincipal == False:
         tituloMostrar="Menu " + titulo
         print(tituloMostrar)
         #mostramos opciones
@@ -58,8 +61,11 @@ def mostrarMenuGenerico(menu, titulo):
 
         #si la opcion es 1 mas que la lista 
         elif seleccion == str(len(menu) + 1):
-            print("Volver Atras")
             salir = True
+            #finaliza el programa
+            break
+        elif seleccion == str(len(menu) + 2):
+            salirAlMenuPrincipal = True
             #finaliza el programa
             break
         else:
@@ -91,9 +97,16 @@ opcionesMenuPrincipal = {
     "2": {"descripcion": "Descarga de Archivos", "funcion": mostrarMenuGenerico, "menu":opcionesMenuDescargaArchivos}
 }
 
-print("Bienvenido al Sistema de Elecciones Presidenciales")
+
+
 #funcion del menu principal
 while True:
+    global salirAlMenuPrincipal
+    if 'salirAlMenuPrincipal' in globals():
+        if salirAlMenuPrincipal != False:
+            print("Bienvenido al Sistema de Elecciones Presidenciales")
+    salirAlMenuPrincipal = False
+
     #mostramos opciones
     mostrarOpcionesMenuPrincipal()
 
