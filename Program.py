@@ -50,12 +50,10 @@ def mostrarMenuGenerico(menu, titulo):
         #si la seleccion esta en nuestras opciones la eleguimos
         if seleccion in menu:
             opcion = menu[seleccion]
-            if "Menu" in opcion:
+            if "menu" in opcion:
                 opcion["funcion"](opcion["menu"],opcion["descripcion"])  # Llama a la función correspondiente
             else:
-                opcion["funcion"](seleccion)  # Llama a la función correspondiente1
-
-            
+                opcion["funcion"]()  # Llama a la función correspondiente1
             salir = False
 
         #si la opcion es 1 mas que la lista 
