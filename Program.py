@@ -11,20 +11,45 @@ def MostrarOpcionesMenu(menu):
     print(f"{len(menu) + 1}) Volver")
     print(f"{len(menu) + 2}) Menu Principal")
 
+def EjecutarConfirmacion():
+    retorno = 0
+    while retorno == 0:
+        print("1) Confirmar")
+        print("0) Cancelar")
+        seleccion = input("Por favor, selecciona una opción => ")
+        if seleccion == "1" or seleccion == "Confirmar":
+            retorno = True
+        elif seleccion == "0" or seleccion == "Cancelar":
+            retorno = False
+        else:
+            print("Opción inválida. Por favor, selecciona nuevamente.")
+    return retorno
+
 #Pedir Partido politico
 def AltaPartidoPolitico():
-    print("Ingrese 'Volver Atras' si desea volver al Menu Principal")
+    print("Ingrese 'Volver Atras' en cualquier momenento si desea Regresar")
     nombre = input("Ingrese el nombre del partido => ")
+
+    if nombre == "Volver Atras":
+        return
+
     while (not EsTextoValido(nombre)) or nombre == "":
         print("Nombre invalido, ingrese el nombre nuevamente")
         nombre = input("Ingrese el nombre del partido => ")
     
     abreviatura = input("Ingrese la abreviatura del Partido => ")
+
+    if abreviatura == "Volver Atras":
+        return
+
     while (not abreviatura.isalpha()) or len(abreviatura) != 3:
         print("Abreviatura invalida, ingrese la abreviatura nuevamente")
         abreviatura = input("Ingrese la abreviatura del partido => ")    
     
     numeroValido = False
+    if abreviatura == "Volver Atras":
+        return
+
     while not numeroValido:
         numPartido = input("Ingrese el número del partido => ")
         if numPartido.isdigit():
@@ -38,6 +63,14 @@ def AltaPartidoPolitico():
     
     print("¿Desea confirmar esta información?")
     print("Nombre del partido ", nombre, "Abreviatura ", abreviatura, "Número ", numPartido)
+
+    confirmacion = EjecutarConfirmacion() 
+    if confirmacion == True:
+        listaPartidosPoliticos[numPartido] = {"nombre": nombre, "abreviatura": abreviatura}
+        print("Partido registrado correctamente")
+    else:
+        print("Partido no registrado")
+
     
 def EsTextoValido(texto):
     textoSinEspacios = texto.replace(" ", "")
@@ -67,10 +100,8 @@ def ParametrizacionModificar():
 def ParametrizacionVer():
     print("parametrizacionVer")
 
-
-
-#funcion menu Descarga Archivos
-def MostrarMenuGenerico(menu, titulo):
+#funcion menu Generico
+def MenuGenerico(menu, titulo):
     salir = False
     global salirAlMenuPrincipal
     while salir == False and salirAlMenuPrincipal == False:
@@ -82,14 +113,23 @@ def MostrarMenuGenerico(menu, titulo):
         #solicitamos opcion
         seleccion = input("Por favor, selecciona una opción => ")
 
-        #si la seleccion esta en nuestras opciones la eleguimos
+        #seleccionamos de nuestras opciones mediante su clave
         if seleccion in menu:
             opcion = menu[seleccion]
-            if "menu" in opcion:
+            if "menu" in opcion or seleccion in [opcion["descripcion"] for opcion in opcionesMenuPrincipal.values()]:
                 opcion["funcion"](opcion["menu"],opcion["descripcion"])  # Llama a la función correspondiente
             else:
                 opcion["funcion"]()  # Llama a la función correspondiente1
             salir = False
+
+        elif seleccion in [opcion["descripcion"] for opcion in menu.values()]:
+            for clave, opcion in menu.items():
+                if opcion["descripcion"] == seleccion:
+                    if "menu" in opcion or seleccion in [opcion["descripcion"] for opcion in opcionesMenuPrincipal.values()]:
+                        opcion["funcion"](opcion["menu"],opcion["descripcion"])  # Llama a la función correspondiente
+                    else:
+                        opcion["funcion"]()  # Llama a la función correspondiente1
+                    salir = False
 
         #si la opcion es 1 mas que la lista 
         elif seleccion == str(len(menu) + 1):
@@ -117,23 +157,28 @@ opcionesABM = {
     "4": {"descripcion": "Ver", "funcion": ParametrizacionVer}
 }
 
+# Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
+listaPartidosPoliticos = {}
+
 # Diccionario de opciones y funciones asociadas Menu Parametizacion
 opcionesMenuParametrizacion= {
-    "1": {"descripcion": "Partidos Políticos", "funcion": MostrarMenuGenerico, "menu":opcionesABM},
-    "2": {"descripcion": "Regiones Geográficas", "funcion": MostrarMenuGenerico, "menu":opcionesABM}
+    "1": {"descripcion": "Partidos Políticos", "funcion": MenuGenerico, "menu":opcionesABM},
+    "2": {"descripcion": "Regiones Geográficas", "funcion": MenuGenerico, "menu":opcionesABM}
 }
 
 # Diccionario de opciones y funciones asociadas Menu Principal
 opcionesMenuPrincipal = {
-    "1": {"descripcion": "Parametrización", "funcion": MostrarMenuGenerico, "menu":opcionesMenuParametrizacion},
-    "2": {"descripcion": "Descarga de Archivos", "funcion": MostrarMenuGenerico, "menu":opcionesMenuDescargaArchivos}
+    "1": {"descripcion": "Parametrización", "funcion": MenuGenerico, "menu":opcionesMenuParametrizacion},
+    "2": {"descripcion": "Descarga de Archivos", "funcion": MenuGenerico, "menu":opcionesMenuDescargaArchivos}
 }
 
 
 
 #funcion del menu principal
 while True:
+    #definimos esta variable como global para que pueda ser consumida por cualquier funcion
     global salirAlMenuPrincipal
+    #verifiacmos que la variable ya existe o todavia no tiene un valor (es decir la primera vez que se ejecuta el codigo)
     if 'salirAlMenuPrincipal' in globals():
         if salirAlMenuPrincipal != False:
             print("Bienvenido al Sistema de Elecciones Presidenciales")
@@ -145,10 +190,16 @@ while True:
     #solicitamos opcion
     seleccion = input("Por favor, selecciona una opción => ")
 
-    #si la seleccion esta en nuestras opciones la eleguimos
+    #seleccionamos de nuestras opciones mediante su clave
     if seleccion in opcionesMenuPrincipal:
-        opcion = opcionesMenuPrincipal[seleccion]
+        opcion = opcionesMenuPrincipal[seleccion] #buscamos la opcion seleccionada
         opcion["funcion"](opcion["menu"],opcion["descripcion"])  # Llama a la función correspondiente
+    #seleccionamos de nuestras opciones mediante su desciocion
+    elif seleccion in [opcion["descripcion"] for opcion in opcionesMenuPrincipal.values()]:
+        for clave, opcion in opcionesMenuPrincipal.items():
+            if opcion["descripcion"] == seleccion:
+                opcion["funcion"](opcion["menu"], opcion["descripcion"])
+                break
     #si la opcion es 1 mas que la lista 
     elif seleccion == str(len(opcionesMenuPrincipal) + 1):
         print("Finalizando programa")
