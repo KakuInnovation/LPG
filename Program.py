@@ -11,6 +11,7 @@ def MostrarOpcionesMenu(menu):
     print(f"{len(menu) + 1}) Volver")
     print(f"{len(menu) + 2}) Menu Principal")
 
+#funcion para confirmacion de datos
 def EjecutarConfirmacion():
     retorno = 0
     while retorno == 0:
@@ -58,6 +59,8 @@ def AltaPartidoPolitico():
                 numeroValido = True
             else:
                 print("Número de partido inválido, ingrese el número nuevamente")
+        elif numPartido == "Volver Atras":
+            return
         else:
             print("Entrada inválida, ingrese un número entero válido")
     
@@ -71,7 +74,7 @@ def AltaPartidoPolitico():
     else:
         print("Partido no registrado")
 
-    
+#verificamos si no hay simbolos
 def EsTextoValido(texto):
     textoSinEspacios = texto.replace(" ", "")
     return textoSinEspacios.isalpha()
@@ -116,7 +119,7 @@ def MenuGenerico(menu, titulo):
         #seleccionamos de nuestras opciones mediante su clave
         if seleccion in menu:
             opcion = menu[seleccion]
-            if "menu" in opcion or seleccion in [opcion["descripcion"] for opcion in opcionesMenuPrincipal.values()]:
+            if "menu" in opcion:
                 opcion["funcion"](opcion["menu"],opcion["descripcion"])  # Llama a la función correspondiente
             else:
                 opcion["funcion"]()  # Llama a la función correspondiente1
@@ -125,18 +128,18 @@ def MenuGenerico(menu, titulo):
         elif seleccion in [opcion["descripcion"] for opcion in menu.values()]:
             for clave, opcion in menu.items():
                 if opcion["descripcion"] == seleccion:
-                    if "menu" in opcion or seleccion in [opcion["descripcion"] for opcion in opcionesMenuPrincipal.values()]:
+                    if "menu" in opcion:
                         opcion["funcion"](opcion["menu"],opcion["descripcion"])  # Llama a la función correspondiente
                     else:
                         opcion["funcion"]()  # Llama a la función correspondiente1
                     salir = False
 
         #si la opcion es 1 mas que la lista 
-        elif seleccion == str(len(menu) + 1):
+        elif seleccion == str(len(menu) + 1) or seleccion == "Volver":
             salir = True
             #finaliza el programa
             break
-        elif seleccion == str(len(menu) + 2):
+        elif seleccion == str(len(menu) + 2) or seleccion == "Menu Principal":
             salirAlMenuPrincipal = True
             #finaliza el programa
             break
@@ -171,8 +174,6 @@ opcionesMenuPrincipal = {
     "1": {"descripcion": "Parametrización", "funcion": MenuGenerico, "menu":opcionesMenuParametrizacion},
     "2": {"descripcion": "Descarga de Archivos", "funcion": MenuGenerico, "menu":opcionesMenuDescargaArchivos}
 }
-
-
 
 #funcion del menu principal
 while True:
