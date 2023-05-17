@@ -37,7 +37,8 @@ def AltaPartidoPolitico():
     while (not EsTextoValido(nombre)) or nombre == "":
         print("Nombre invalido, ingrese el nombre nuevamente")
         nombre = input("Ingrese el nombre del partido => ")
-    
+    nombre = nombre.upper()
+
     abreviatura = input("Ingrese la abreviatura del Partido => ")
 
     if abreviatura == "Volver Atras":
@@ -45,7 +46,8 @@ def AltaPartidoPolitico():
 
     while (not abreviatura.isalpha()) or len(abreviatura) != 3:
         print("Abreviatura invalida, ingrese la abreviatura nuevamente")
-        abreviatura = input("Ingrese la abreviatura del partido => ")    
+        abreviatura = input("Ingrese la abreviatura del partido => ")
+    abreviatura = nombre.upper() 
     
     numeroValido = False
     if abreviatura == "Volver Atras":
@@ -65,7 +67,7 @@ def AltaPartidoPolitico():
             print("Entrada inválida, ingrese un número entero válido")
     
     print("¿Desea confirmar esta información?")
-    print("Nombre del partido ", nombre, "Abreviatura ", abreviatura, "Número ", numPartido)
+    print("Nombre del partido: " + nombre + ", Abreviatura: " + abreviatura + ", Número ", str(numPartido))
 
     confirmacion = EjecutarConfirmacion() 
     if confirmacion == True:
