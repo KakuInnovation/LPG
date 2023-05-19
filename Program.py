@@ -33,20 +33,14 @@ def AltaPartidoPolitico():
     if nombre == "Volver Atras":
         return
 
-    while (not EsTextoValido(nombre)) or nombre == "":
-        print("Nombre invalido, ingrese el nombre nuevamente")
-        nombre = input("Ingrese el nombre del partido => ")
-    nombre = nombre.upper()
+    
 
     abreviatura = input("Ingrese la abreviatura del Partido => ")
 
     if abreviatura == "Volver Atras":
         return
 
-    while (not abreviatura.isalpha()) or len(abreviatura) != 3:
-        print("Abreviatura invalida, ingrese la abreviatura nuevamente")
-        abreviatura = input("Ingrese la abreviatura del partido => ")
-    abreviatura = nombre.upper() 
+    
     
     numeroValido = False
     if abreviatura == "Volver Atras":
@@ -75,8 +69,9 @@ def AltaPartidoPolitico():
     else:
         print("Partido no registrado")
 
+
 #verificamos si no hay simbolos
-def EsTextoValido(texto):
+def ValidacionUnicamneteTexto(texto):
     textoSinEspacios = texto.replace(" ", "")
     return textoSinEspacios.isalpha()
 
@@ -88,7 +83,23 @@ def DecargarPartidosPoliticos():
 def DecargarRegionesGeograficas():
     print("Descargado")
 
-#Funcion Parametrizacion Alta
+def ValidacionesCampo(dato, campo):
+    global deDondeVengo
+    if deDondeVengo == "Partidos Politicos":
+        if campo=="Nombre":
+            while (not ValidacionUnicamneteTexto(dato)) or dato == "":
+                dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+            dato = dato.upper()
+        elif campo == "Abreviatura":
+            while (not dato.isalpha()) or len(dato) != 3:
+                dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+            dato = dato.upper() 
+    elif deDondeVengo == "Regiones Geograficas":
+        print("aun no")
+    return dato
+        
+
+#Funcion que redirige a la funcion de alta espesifica
 def ParametrizacionAlta():
     global deDondeVengo
     if deDondeVengo == "Partidos Politicos":
@@ -115,7 +126,7 @@ def ParametrizacionVer():
     
     if lista != None:
         for clave, obj in lista.items():
-            textoEscribir=""
+            textoEscribir = ""
             for propiedad, valor in obj.items():
                 textoEscribir += str(propiedad) + " " + str(valor) + " "
             print(str(clave) + ")",textoEscribir)
@@ -179,9 +190,15 @@ opcionesABM = {
     "4": {"Descripcion": "Ver", "Funcion": ParametrizacionVer}
 }
 
+datosDeCadaLista = {
+    "Partidos Politicos": ["Nombre", "Abreviatura", "Clave"],
+    "Regiones Geograficas": ["ClaveAutoIncrimental","Nombre"] 
+}
+
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
 listaPartidosPoliticos = {}
 
+# Diccionario de provincias la clave es un numero autoincremental y su nombre
 listaProvincias = {}
 
 # Diccionario de opciones y Funciones asociadas Menu Parametizacion
