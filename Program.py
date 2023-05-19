@@ -72,17 +72,21 @@ def DecargarPartidosPoliticos():
 def DecargarRegionesGeograficas():
     print("Descargado")
 
+def MensajeErrorValidacion(dato,campo):
+    dato = input(campo+" Invalido, Ingrese el "+ campo + " nuevamente")
+    return dato
+
 def ValidacionesCampo(dato, campo):
     global deDondeVengo
     flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
             while (not ValidacionUnicamneteTexto(dato)) or dato == "":
-                dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+                dato = MensajeErrorValidacion(dato,campo)
             dato = dato.upper()
         elif campo == "Abreviatura":
             while (not dato.isalpha()) or len(dato) != 3:
-                dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+                dato = MensajeErrorValidacion(dato,campo)
             dato = dato.upper() 
         elif campo == "Numero":
             while flag == False:
@@ -91,10 +95,8 @@ def ValidacionesCampo(dato, campo):
                     if 0 < dato <= 999:
                         #falta verificar que este numero no este en la lista
                         flag = True
-                    else:
-                        dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
-                else:
-                    dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+                if flag == False:
+                    MensajeErrorValidacion(dato,campo)
 
     elif deDondeVengo == "Regiones Geograficas":
         print("aun no")
@@ -104,10 +106,17 @@ def ValidacionesCampo(dato, campo):
 #Funcion que redirige a la funcion de alta espesifica
 def ParametrizacionAlta():
     global deDondeVengo
-    if deDondeVengo == "Partidos Politicos":
-        AltaPartidoPolitico()
-    elif deDondeVengo == "Regiones Geograficas":
-        AltaPartidoPolitico()
+    opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
+    volverAtras = False
+    for clave in opciones:
+        if volverAtras == False:
+            clave = str(clave)
+            dato = input("Ingrese " + clave + " => ")
+            if dato == "Volver Atras":
+                volverAtras = True
+            else:
+                ValidacionesCampo(dato, clave)
+    
 
 #Funcion Parametrizacion Baja
 def ParametrizacionBaja():
@@ -193,8 +202,8 @@ opcionesABM = {
 }
 
 datosDeCadaLista = {
-    "Partidos Politicos": ["Nombre", "Abreviatura", "Clave"],
-    "Regiones Geograficas": ["ClaveAutoIncrimental","Nombre"] 
+    "Partidos Politicos": {"ElementosSolicitar":["Nombre", "Abreviatura", "Clave"]},
+    "Regiones Geograficas": {"ElementosSolicitar":["ClaveAutoIncrimental","Nombre"]}
 }
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
@@ -232,7 +241,8 @@ while True:
     #solicitamos opcion
     seleccion = input("Por favor, selecciona una opcion => ")
 
-    #seleccionamos de nuestras opciones mediante su clave
+    
+    #seleccionamos de nuestras opciones mediante su clave (la hacemos por separado ya que se espera que se ingrese numeros generando asi no tener que recorrer el objeto)
     if seleccion in opcionesMenuPrincipal:
         opcion = opcionesMenuPrincipal[seleccion] #buscamos la opcion seleccionada
         opcion["Funcion"](opcion["Menu"],opcion["Descripcion"])  # Llama a la funcion correspondiente
