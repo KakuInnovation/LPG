@@ -46,18 +46,7 @@ def AltaPartidoPolitico():
     if abreviatura == "Volver Atras":
         return
 
-    while not numeroValido:
-        numPartido = input("Ingrese el numero del partido => ")
-        if numPartido.isdigit():
-            numPartido = int(numPartido)    
-            if 0 < numPartido <= 999:
-                numeroValido = True
-            else:
-                print("Numero de partido invalido, ingrese el numero nuevamente")
-        elif numPartido == "Volver Atras":
-            return
-        else:
-            print("Entrada invalida, ingrese un numero entero valido")
+    
     
     print("¿Desea confirmar esta informacion?")
     print("Nombre del partido: " + nombre + ", Abreviatura: " + abreviatura + ", Numero ", str(numPartido))
@@ -85,6 +74,7 @@ def DecargarRegionesGeograficas():
 
 def ValidacionesCampo(dato, campo):
     global deDondeVengo
+    flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
             while (not ValidacionUnicamneteTexto(dato)) or dato == "":
@@ -94,6 +84,18 @@ def ValidacionesCampo(dato, campo):
             while (not dato.isalpha()) or len(dato) != 3:
                 dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
             dato = dato.upper() 
+        elif campo == "Numero":
+            while flag == False:
+                if dato.isdigit():
+                    dato = int(dato)
+                    if 0 < dato <= 999:
+                        #falta verificar que este numero no este en la lista
+                        flag = True
+                    else:
+                        dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+                else:
+                    dato = input(campo," Invalido, Ingrese el", campo, "nuevamente")
+
     elif deDondeVengo == "Regiones Geograficas":
         print("aun no")
     return dato
