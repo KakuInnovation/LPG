@@ -26,7 +26,7 @@ def EjecutarConfirmacion():
     return retorno
 
 #verificamos si no hay simbolos
-def ValidacionUnicamneteTexto(texto):
+def ValidacionUnicamenteTexto(texto):
     textoSinEspacios = texto.replace(" ", "")
     return textoSinEspacios.isalpha()
 
@@ -47,7 +47,7 @@ def ValidacionesCampo(dato, campo):
     flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
-            while (not ValidacionUnicamneteTexto(dato)) or dato == "":
+            while (not ValidacionUnicamenteTexto(dato)) or dato == "":
                 dato = MensajeErrorValidacion(dato,campo)
             dato = dato.upper()
         elif campo == "Abreviatura":
@@ -59,10 +59,13 @@ def ValidacionesCampo(dato, campo):
                 if dato.isdigit():
                     dato = int(dato)
                     if 0 < dato <= 999:
+                        for listaPartidosPoliticos in :
+                            
                         #falta verificar que este numero no este en la lista
                         flag = True
                 if flag == False:
                     MensajeErrorValidacion(dato,campo)
+                
 
     elif deDondeVengo == "Regiones Geograficas":
         print("aun no")
@@ -186,7 +189,12 @@ opcionesABM = {
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
 listaPartidosPoliticos = {
-    1 :{"Nombre":"PSJ", "Abreviatura":"PSJ" }
+    1 :{"Nombre":"PSJ", "Abreviatura":"PSJ" },
+    2 :{"Nombre":"AAA", "Abreviatura":"AAA"},
+    3 :{"Nombre":"BBB", "Abreviatura":"BBB"},
+    4 :{"Nombre":"CCC", "Abreviatura":"CCC"},
+    5 :{"Nombre":"DDD", "Abreviatura":"DDD"},
+    6 :{"Nombre":"EEE", "Abreviatura":"EEE"},
 }
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
