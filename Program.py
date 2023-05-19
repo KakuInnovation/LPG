@@ -25,40 +25,6 @@ def EjecutarConfirmacion():
             print("Opcion invalida. Por favor, selecciona nuevamente.")
     return retorno
 
-#Pedir Partido politico
-def AltaPartidoPolitico():
-    print("Ingrese 'Volver Atras' en cualquier momenento si desea Regresar")
-    nombre = input("Ingrese el nombre del partido => ")
-
-    if nombre == "Volver Atras":
-        return
-
-    
-
-    abreviatura = input("Ingrese la abreviatura del Partido => ")
-
-    if abreviatura == "Volver Atras":
-        return
-
-    
-    
-    numeroValido = False
-    if abreviatura == "Volver Atras":
-        return
-
-    
-    
-    print("¿Desea confirmar esta informacion?")
-    print("Nombre del partido: " + nombre + ", Abreviatura: " + abreviatura + ", Numero ", str(numPartido))
-
-    confirmacion = EjecutarConfirmacion() 
-    if confirmacion == True:
-        listaPartidosPoliticos[numPartido] = {"Nombre": nombre, "Abreviatura": abreviatura}
-        print("Partido registrado correctamente")
-    else:
-        print("Partido no registrado")
-
-
 #verificamos si no hay simbolos
 def ValidacionUnicamneteTexto(texto):
     textoSinEspacios = texto.replace(" ", "")
@@ -108,14 +74,31 @@ def ParametrizacionAlta():
     global deDondeVengo
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
     volverAtras = False
-    for clave in opciones:
+    clave=""
+    elemento = {}
+    for campo in opciones:
         if volverAtras == False:
-            clave = str(clave)
-            dato = input("Ingrese " + clave + " => ")
-            if dato == "Volver Atras":
-                volverAtras = True
+            if campo == "ClaveAutoIncrimental":
+                clave = "falta programar"
             else:
-                ValidacionesCampo(dato, clave)
+                if campo == "Clave":
+                    campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
+                dato = input("Ingrese " + campo + " => ")
+                if dato == "Volver Atras":
+                    volverAtras = True
+                else:
+                    ValidacionesCampo(dato, campo)
+                if campo == "Clave":
+                    clave = dato
+                else:
+                    elemento[campo] = dato
+    confirmacion = EjecutarConfirmacion() 
+    if confirmacion == True:
+        datosDeCadaLista[deDondeVengo]["Lista"][clave] = elemento
+        print(deDondeVengo, "Registrado Correctamente")
+    else:
+        print(deDondeVengo, "No Registrado")
+
     
 
 #Funcion Parametrizacion Baja
@@ -201,16 +184,18 @@ opcionesABM = {
     "4": {"Descripcion": "Ver", "Funcion": ParametrizacionVer}
 }
 
-datosDeCadaLista = {
-    "Partidos Politicos": {"ElementosSolicitar":["Nombre", "Abreviatura", "Clave"]},
-    "Regiones Geograficas": {"ElementosSolicitar":["ClaveAutoIncrimental","Nombre"]}
-}
-
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
-listaPartidosPoliticos = {}
+listaPartidosPoliticos = {
+    1 :{"Nombre":"PSJ", "Abreviatura":"PSJ" }
+}
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
 listaProvincias = {}
+
+datosDeCadaLista = {
+    "Partidos Politicos": {"ElementosSolicitar":["Nombre", "Abreviatura", "Clave"], "Lista":listaPartidosPoliticos, "NombreClave": "Numero del Partido"},
+    "Regiones Geograficas": {"ElementosSolicitar":["ClaveAutoIncrimental","Nombre"],"Lista":listaProvincias}
+}
 
 # Diccionario de opciones y Funciones asociadas Menu Parametizacion
 opcionesMenuParametrizacion= {
