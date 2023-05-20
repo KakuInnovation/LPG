@@ -4,6 +4,7 @@ def MostrarOpcionesMenuPrincipal():
         print(f"{opcion}) {Funcion['Descripcion']}")
     print(f"{len(opcionesMenuPrincipal) + 1}) Salir")
 
+#Mostrar Opciones Menu Generico
 def MostrarOpcionesMenu(menu):
     for opcion, Funcion in menu.items():
         print(f"{opcion}) {Funcion['Descripcion']}")
@@ -11,15 +12,15 @@ def MostrarOpcionesMenu(menu):
     print(f"{len(menu) + 2}) Menu Principal")
 
 #Funcion para confirmacion de datos
-def EjecutarConfirmacion():
+def EjecutarConfirmacion(si = "Confirmar", no = "Cancelar"):
     retorno = 0
     while retorno == 0:
-        print("1) Confirmar")
-        print("0) Cancelar")
+        print("1)", si)
+        print("0)", no)
         seleccion = input("Por favor, selecciona una opcion => ")
-        if seleccion == "1" or seleccion == "Confirmar":
+        if seleccion == "1" or seleccion == si:
             retorno = True
-        elif seleccion == "0" or seleccion == "Cancelar":
+        elif seleccion == "0" or seleccion == no:
             retorno = False
         else:
             print("Opcion invalida. Por favor, selecciona nuevamente.")
@@ -39,53 +40,95 @@ def DecargarRegionesGeograficas():
     print("Descargado")
 
 #Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
-def MensajeErrorValidacion(dato,campo):
-    dato = input(campo+" Invalido, Ingrese el "+ campo + " nuevamente =>")
+def MensajeErrorValidacion(dato,campo, tipo):
+    if tipo == "Modificar":
+        print(campo,"Invalido, Recuerde si quiere Mantener la Informacion Dejelo el Campo en Blanco")
+        dato = input("Por Favor, Ingrese el "+ campo + " nuevamente =>")
+    else:
+        dato = input(campo+" Invalido, Ingrese el "+ campo + " nuevamente => ")
     return dato
 
+#Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
+#Si se equivoca multiples veces mostrar Recordatorio
+def MensajeVolverAtras(cantidad = 0):
+    if cantidad == 0:
+        print("Ingrese 'Volver Atras' en cualquier momenento si desea Regresar al Menu anterior.")
+    elif cantidad == 3:
+        print("Recuerde que Ingrando 'Volver Atras' Regresara al Menu anterior.")
+    cantidad += 1
+    return cantidad
+
+def VerificarRepetidos(lista, dato, campo = ""):
+    for clave, opcion in lista.items():
+        if campo == "":
+            if str(clave) == str(dato):
+                return True
+        else:
+            if opcion[campo] == dato:
+                return True
+    return False
+
 #funcion para validar cada dato d e las altas
-def ValidacionesCampo(dato, campo):
+def ValidacionesCampo(dato, campo, tipo):
     global deDondeVengo
     flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
+            if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
+                   print("Este Nombre ya pertence a un Partido")
+                   dato = None
             while (not ValidacionUnicamenteTexto(dato)) or dato == "":
-                dato = MensajeErrorValidacion(dato,campo)
+                if dato == "" and tipo == "Modificar":
+                    break
+                dato = MensajeErrorValidacion(dato, campo, tipo)
+                if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
+                   print("Este Nombre ya pertence a un Partido")
+                   dato = None
             dato = dato.upper()
         elif campo == "Abreviatura":
+            if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
+                   print("Este Abreviatura ya pertence a un Partido")
+                   dato = None
             while (not dato.isalpha()) or len(dato) != 3:
-                dato = MensajeErrorValidacion(dato,campo)
+                if dato == "" and tipo == "Modificar":
+                    break
+                dato = MensajeErrorValidacion(dato,campo, tipo)
+                if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
+                   print("Este Abreviatura ya pertence a un Partido")
+                   dato = None
             dato = dato.upper() 
         elif campo == "Numero del Partido":
             while flag == False:
-                if dato.isdigit():
+                if dato == "" and tipo == "Modificar":
+                    break
+                elif str(dato).isdigit():
                     dato = int(dato)
                     if 0 < dato <= 999:
-                        encontrado = False
-                        for clave, opciones in listaPartidosPoliticos.items():
-                            if clave == dato:
-                                print("Este numero ya pertence a un partido: ", opciones ["Nombre"]) 
-                                dato = input("Por favor Ingrese un Numero nuevamente: ")
-                                encontrado == True
-                                break
-                        if encontrado == False:
+                        if VerificarRepetidos(listaPartidosPoliticos, dato) == False:
                             flag = True
+                        else:
+                            print("Este Numero ya pertence a un Partido:", listaPartidosPoliticos[dato]["Nombre"]) 
                     else:
-                        dato = MensajeErrorValidacion(dato, campo)
-
-                elif flag == False:
-                    dato = MensajeErrorValidacion(dato, campo)
+                        dato = MensajeErrorValidacion(dato, campo, tipo)
+                #no cambiar a elif
+                if flag == False:
+                    dato = MensajeErrorValidacion(dato, campo, tipo)
 
     elif deDondeVengo == "Regiones Geograficas":
         if campo == "Nombre":
-            while flag == False:
+            while flag == True:
+                while (not ValidacionUnicamenteTexto(dato)) or dato == "":
+                    if dato == "" and tipo == "Modificar":
+                        break
+                    dato = MensajeErrorValidacion(dato, campo, tipo)
                 dato = dato.upper()
-                flag = True
-                for clave, opcion in listaProvincias.items():
-                    if opcion["Nombre"] == dato:
-                        flag = False
-                if flag == False:
-                    dato = input("Provincia ya Existente, Ingrese el "+ campo + " nuevamente =>")
+                flag = VerificarRepetidos(listaProvincias, dato, "Nombre")
+                if flag == True:
+                    if tipo == "Modificar":
+                        print("Provincia ya Existente, Recuerde si quiere Mantener la Informacion Dejelo el Campo en Blanco")
+                        dato = input("Por Favor, Ingrese el "+ campo + " nuevamente => ")
+                    else:
+                        dato = input("Provincia ya Existente, Ingrese el "+ campo + " nuevamente => ")
     return dato
 
 #Funcion que redirige a la funcion de alta espesifica
@@ -93,22 +136,22 @@ def ParametrizacionAlta():
     global deDondeVengo
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
     listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
-    volverAtras = False
-    clave=""
+    clave = ""
     elemento = {}
+    print("Alta", deDondeVengo)
+    MensajeVolverAtras()
     for campo in opciones:
-        if volverAtras == False:
-            if campo == "ClaveAutoIncrimental":
-                clave = len(listaATrabajar) + 1
+        if campo == "ClaveAutoIncrimental":
+            clave = len(listaATrabajar) + 1
+        else:
+            if campo == "Clave":
+                campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
+            dato = input("Ingrese " + campo + " => ")
+            if dato == "Volver Atras":
+                return
             else:
-                if campo == "Clave":
-                    campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
-                dato = input("Ingrese " + campo + " => ")
-                if dato == "Volver Atras":
-                    volverAtras = True
-                else:
-                    dato = ValidacionesCampo(dato, campo)
-                if campo == "Clave":
+                dato = ValidacionesCampo(dato, campo,"Alta") 
+                if campo == datosDeCadaLista[deDondeVengo]["NombreClave"]:
                     clave = dato
                 else:
                     elemento[campo] = dato
@@ -123,11 +166,63 @@ def ParametrizacionAlta():
 def ParametrizacionBaja():
     print("parametrizacionBaja")
 
-#Funcion Parametrizacion Alta
+#Funcion Parametrizacion Modificar
 def ParametrizacionModificar():
-    print("parametrizacionModificar")
+    global deDondeVengo
+    print("Modificacion", deDondeVengo)
+    print("¿Desea Ver las Opciones?")
+    
+    if EjecutarConfirmacion("Si","No") == True:
+        ParametrizacionVer()
+    MensajeVolverAtras()
+    encontrado = None
+    dato = input("Ingrese el campo a Modificar => ")
+    listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
+    mostrarMensajeVolverAtras = 0
+    while encontrado == None:
+        if dato == "Volver Atras":
+            return
+        else:
+            for clave, opciones in listaATrabajar.items():
+                if str(clave) == str(dato):
+                    encontrado = clave
+                    break
+                elif "Nombre" in opciones:
+                    dato = str(dato).upper()
+                    print (opciones["Nombre"])
+                    if dato == opciones["Nombre"]:
+                        encontrado = clave
+                        break
+        if encontrado == None:
+            mostrarMensajeVolverAtras = MensajeVolverAtras(mostrarMensajeVolverAtras)
+            dato = input("No se ha Encontrado el Campo, Por Favor Ingrese Nuevamente => ")
+    opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
+    elemento = {}
+    clave = ""
+    for campo in opciones:
+        if campo == "ClaveAutoIncrimental":
+            clave = len(listaATrabajar) + 1
+        else:
+            if campo == "Clave":
+                campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
+            dato = input("Ingrese " + campo + " => ")
+            if dato == "Volver Atras":
+                return
+            else:
+                dato = ValidacionesCampo(dato, campo,"Modificar") 
+                if campo == datosDeCadaLista[deDondeVengo]["NombreClave"]:
+                    clave = dato
+                else:
+                    elemento[campo] = dato
+    confirmacion = EjecutarConfirmacion()
+    if confirmacion == True:
+        del listaATrabajar[encontrado]
+        listaATrabajar[clave] = elemento
+        print("Cambio Registrado")
+    else:
+        print("Cambio No Registrado")
 
-#Funcion Parametrizacion Alta
+#Funcion Parametrizacion Ver
 def ParametrizacionVer():
     global deDondeVengo
     lista = None
@@ -137,7 +232,7 @@ def ParametrizacionVer():
         lista = listaProvincias
     
     if lista != None:
-        
+        print(deDondeVengo)
         for clave, obj in lista.items():
             textoEscribir = ""
             totalElementos = len(obj)
