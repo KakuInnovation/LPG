@@ -19,5 +19,5 @@ UADE Copa Algoritmia 2023
                 - menu: este es obligatorio si esta la funcion MenuGenerico creada, aqui se pone el diccionario de el menu correspondiente
         - Para acceder a un sub menu tenemos la funcion MenuGenerico. Esta funcion lo que hace es empezar ciclos dentro de nuestro ciclo principal para representar cada menu correspondiente. Tambien se puede llamar MenuGenerico dentro de un MenuGenerico para ingresar a un siguiente menu, ejemplo: menuPrincial>Parametrizacion>Alta. Al Finzalizar una opcion (por ejemplo: alta partido) esta volvera a su menu anterior correspondiente. En caso de pulsar "Atras" esto finalizara el ciclo actual y regresa al ciclo anterior. Si se pone la variable "salirAlMenuPrincipal" como verdadera esta volvera al menu principal directamente finlizando todos los demas ciclos
     Las opciones del munu pueden ser accedidas mediante su descipcion o su clave
--Partido Politicos: Suponemos que las abreviaturas de los partidos son 3 letras y su numero va desde el 1 al 999
+-Partido Politicos: Suponemos que las abreviaturas de los partidos son 3 letras y su numero va desde el 1 al 999 y tambien que es su clave
 -While: Evitamos usar los break

@@ -38,10 +38,12 @@ def DecargarPartidosPoliticos():
 def DecargarRegionesGeograficas():
     print("Descargado")
 
+#Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
 def MensajeErrorValidacion(dato,campo):
-    dato = input(campo+" Invalido, Ingrese el "+ campo + " nuevamente")
+    dato = input(campo+" Invalido, Ingrese el "+ campo + " nuevamente =>")
     return dato
 
+#funcion para validar cada dato d e las altas
 def ValidacionesCampo(dato, campo):
     global deDondeVengo
     flag = False
@@ -59,30 +61,36 @@ def ValidacionesCampo(dato, campo):
                 if dato.isdigit():
                     dato = int(dato)
                     if 0 < dato <= 999:
-                        for listaPartidosPoliticos in :
+                        #for listaPartidosPoliticos in :
                             
                         #falta verificar que este numero no este en la lista
                         flag = True
                 if flag == False:
                     MensajeErrorValidacion(dato,campo)
-                
-
     elif deDondeVengo == "Regiones Geograficas":
-        print("aun no")
+        if campo == "Nombre":
+            while flag == False:
+                dato = dato.upper()
+                flag = True
+                for clave, opcion in listaProvincias.items():
+                    if opcion["Nombre"] == dato:
+                        flag = False
+                if flag == False:
+                    dato = input("Provincia ya Existente, Ingrese el "+ campo + " nuevamente =>")
     return dato
-        
 
 #Funcion que redirige a la funcion de alta espesifica
 def ParametrizacionAlta():
     global deDondeVengo
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
+    listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
     volverAtras = False
     clave=""
     elemento = {}
     for campo in opciones:
         if volverAtras == False:
             if campo == "ClaveAutoIncrimental":
-                clave = "falta programar"
+                clave = len(listaATrabajar) + 1
             else:
                 if campo == "Clave":
                     campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
@@ -90,19 +98,17 @@ def ParametrizacionAlta():
                 if dato == "Volver Atras":
                     volverAtras = True
                 else:
-                    ValidacionesCampo(dato, campo)
+                    dato = ValidacionesCampo(dato, campo)
                 if campo == "Clave":
                     clave = dato
                 else:
                     elemento[campo] = dato
     confirmacion = EjecutarConfirmacion() 
     if confirmacion == True:
-        datosDeCadaLista[deDondeVengo]["Lista"][clave] = elemento
+        listaATrabajar[clave] = elemento
         print(deDondeVengo, "Registrado Correctamente")
     else:
         print(deDondeVengo, "No Registrado")
-
-    
 
 #Funcion Parametrizacion Baja
 def ParametrizacionBaja():
