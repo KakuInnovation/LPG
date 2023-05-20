@@ -291,6 +291,9 @@ def ParametrizacionVer():
                 if indiceActual != totalElementos:
                     textoEscribir += " / "
             print(str(clave) + ")",textoEscribir)
+    else:
+        print("No hay", deDondeVengo, "Cargadas")
+    input("Pulse Enter para Continuar ")
 
 #Funcion menu Generico
 def MenuGenerico(menu, titulo):
