@@ -2,7 +2,13 @@
 UADE Copa Algoritmia 2023
 
 ## Desarrollado por:
-- Bruno, Gustavo: https://github.com/geb2701 https://www.linkedin.com/in/gustavo-ezequiel-bruno-5197a218b/
+- Bruno, Gustavo: https://github.com/geb2701 https://www.linkedin.com/in/gustavo-ezequiel-bruno-5197a218b/ gubruno@uade.edu.ar
+- Guerrero, Alejandro 
+- Pedemonte, Matias https://github.com/catafrulo 
+- Roubineau, Augusto: https://github.com/AugstR CRoubineau@uade.edu.ar
+- Voutsina, Luciano: https://github.com/1UCHQ LVoutsina@uade.edu.ar
+
+
 
 ## Link del Proyecto
 - URL de GITHUB

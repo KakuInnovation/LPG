@@ -77,7 +77,7 @@ def ValidacionesCampo(dato, campo, tipo, claveElemento = ""):
     flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
-            while (not ValidacionUnicamenteTexto(dato)) or dato == "" or VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento, "Nombre") :
+            while dato == "" or VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento, "Nombre") :
                 if dato == "" and tipo == "Modificar":
                     break
                 if VerificarRepetidos(listaPartidosPoliticos, dato, "Nombre") == True:
@@ -105,8 +105,6 @@ def ValidacionesCampo(dato, campo, tipo, claveElemento = ""):
                             flag = True
                         else:
                             print("Este Numero ya pertence a un Partido:", listaPartidosPoliticos[dato]["Nombre"]) 
-                    else:
-                        dato = MensajeErrorValidacion(dato, campo, tipo)
                 #no cambiar a elif
                 if flag == False:
                     dato = MensajeErrorValidacion(dato, campo, tipo)
@@ -189,6 +187,8 @@ def ParametrizacionBaja():
     print("Baja", deDondeVengo)
     ParametrizacionVer()
     dato = input("Ingrese el elemento a Eliminar => ")
+    if dato == "Volver Atras":
+        return
     listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
     dato = BuscarElementoLista(dato, listaATrabajar)
 
@@ -221,6 +221,9 @@ def ParametrizacionModificar():
     MensajeVolverAtras()
     
     dato = input("Ingrese el campo a Modificar => ")
+    if dato == "Volver Atras":
+            return
+
     listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
     encontrado = BuscarElementoLista(dato, listaATrabajar)
     
@@ -230,7 +233,7 @@ def ParametrizacionModificar():
     for campo in opciones:
         dato = input("Ingrese " + campo + " => ")
         if dato == "Volver Atras":
-                return
+            return
         else:
             elemento[campo] = ValidacionesCampo(dato, campo, "Modificar", encontrado) 
 
@@ -353,7 +356,30 @@ listaPartidosPoliticos = {
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
 listaProvincias = {
-    1 :{"Nombre":"CABA"}
+    1: {"Nombre": "CABA"},
+    2: {"Nombre": "BUENOS AIRES"},
+    3: {"Nombre": "CATAMARCA"},
+    4: {"Nombre": "CHACO"},
+    5: {"Nombre": "CHUBUT"},
+    6: {"Nombre": "CORDOBA"},
+    7: {"Nombre": "CORRIENTES"},
+    8: {"Nombre": "ENTRE RIOS"},
+    9: {"Nombre": "FORMOSA"},
+    10: {"Nombre": "JUJUY"},
+    11: {"Nombre": "LA PAMPA"},
+    12: {"Nombre": "LA RIOJA"},
+    13: {"Nombre": "MENDOZA"},
+    14: {"Nombre": "MISIONES"},
+    15: {"Nombre": "NEUQUEN"},
+    16: {"Nombre": "RIO NEGRO"},
+    17: {"Nombre": "SALTA"},
+    18: {"Nombre": "SAN JUAN"},
+    19: {"Nombre": "SAN LUIS"},
+    20: {"Nombre": "SANTA CRUZ"},
+    21: {"Nombre": "SANTA FE"},
+    22: {"Nombre": "SANTIAGO DEL ESTERO"},
+    23: {"Nombre": "TIERRA DEL FUEGO"},
+    24: {"Nombre": "TUCUMAN"}
 }
 
 datosDeCadaLista = {
