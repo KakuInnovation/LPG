@@ -137,10 +137,16 @@ def ParametrizacionVer():
         lista = listaProvincias
     
     if lista != None:
+        
         for clave, obj in lista.items():
             textoEscribir = ""
+            totalElementos = len(obj)
+            indiceActual = 0
             for propiedad, valor in obj.items():
-                textoEscribir += str(propiedad) + " " + str(valor) + " "
+                indiceActual += 1
+                textoEscribir += str(propiedad) + ": " + str(valor)
+                if indiceActual != totalElementos:
+                    textoEscribir += " / "
             print(str(clave) + ")",textoEscribir)
 
 #Funcion menu Generico
