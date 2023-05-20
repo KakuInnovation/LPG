@@ -56,17 +56,26 @@ def ValidacionesCampo(dato, campo):
             while (not dato.isalpha()) or len(dato) != 3:
                 dato = MensajeErrorValidacion(dato,campo)
             dato = dato.upper() 
-        elif campo == "Numero":
+        elif campo == "Numero del Partido":
             while flag == False:
                 if dato.isdigit():
                     dato = int(dato)
                     if 0 < dato <= 999:
-                        #for listaPartidosPoliticos in :
-                            
-                        #falta verificar que este numero no este en la lista
-                        flag = True
-                if flag == False:
-                    MensajeErrorValidacion(dato,campo)
+                        encontrado = False
+                        for clave, opciones in listaPartidosPoliticos.items():
+                            if clave == dato:
+                                print("Este numero ya pertence a un partido: ", opciones ["Nombre"]) 
+                                dato = input("Por favor Ingrese un Numero nuevamente: ")
+                                encontrado == True
+                                break
+                        if encontrado == False:
+                            flag = True
+                    else:
+                        dato = MensajeErrorValidacion(dato, campo)
+
+                elif flag == False:
+                    dato = MensajeErrorValidacion(dato, campo)
+
     elif deDondeVengo == "Regiones Geograficas":
         if campo == "Nombre":
             while flag == False:
