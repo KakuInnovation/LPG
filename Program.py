@@ -19,12 +19,11 @@ def EjecutarConfirmacion(si = "Confirmar", no = "Cancelar"):
         print("0)", no)
         seleccion = input("Por favor, selecciona una opcion => ")
         if seleccion == "1" or seleccion == si:
-            retorno = True
+            return True
         elif seleccion == "0" or seleccion == no:
-            retorno = False
+            return False
         else:
             print("Opcion invalida. Por favor, selecciona nuevamente.")
-    return retorno
 
 #verificamos si no hay simbolos
 def ValidacionUnicamenteTexto(texto):
@@ -43,7 +42,7 @@ def DecargarRegionesGeograficas():
 def MensajeErrorValidacion(dato,campo, tipo):
     if tipo == "Modificar":
         print(campo,"Invalido, Recuerde si quiere Mantener la Informacion Dejelo el Campo en Blanco")
-        dato = input("Por Favor, Ingrese el "+ campo + " nuevamente =>")
+        dato = input("Por Favor, Ingrese el "+ campo + " nuevamente => ")
     else:
         dato = input(campo+" Invalido, Ingrese el "+ campo + " nuevamente => ")
     return dato
@@ -58,23 +57,27 @@ def MensajeVolverAtras(cantidad = 0):
     cantidad += 1
     return cantidad
 
-def VerificarRepetidos(lista, dato, campo = ""):
+#Funcion para verificar si esta el elemento en la lista, claveElemento es para si son iguales permitirmos continuar el proceso
+def VerificarRepetidos(lista, dato, claveElemento = "", campo = ""):
     for clave, opcion in lista.items():
         if campo == "":
             if str(clave) == str(dato):
                 return True
         else:
             if opcion[campo] == dato:
-                return True
+                if str(clave) == claveElemento or opcion["Nombre"] == claveElemento:
+                    return False
+                else:
+                    return True
     return False
 
 #funcion para validar cada dato d e las altas
-def ValidacionesCampo(dato, campo, tipo):
+def ValidacionesCampo(dato, campo, tipo, claveElemento = ""):
     global deDondeVengo
     flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
-            while (not ValidacionUnicamenteTexto(dato)) or dato == "" or VerificarRepetidos(listaPartidosPoliticos, dato, "Nombre") :
+            while (not ValidacionUnicamenteTexto(dato)) or dato == "" or VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento, "Nombre") :
                 if dato == "" and tipo == "Modificar":
                     break
                 if VerificarRepetidos(listaPartidosPoliticos, dato, "Nombre") == True:
@@ -83,10 +86,10 @@ def ValidacionesCampo(dato, campo, tipo):
                 dato = str(dato).upper()
             dato = dato.upper()
         elif campo == "Abreviatura":
-            while (not dato.isalpha()) or len(dato) != 3 or VerificarRepetidos(listaPartidosPoliticos, dato, "Abreviatura"):
+            while (not dato.isalpha()) or len(dato) != 3 or VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento, "Abreviatura"):
                 if dato == "" and tipo == "Modificar":
                     break
-                if VerificarRepetidos(listaPartidosPoliticos, dato, "Abreviatura") == True:
+                if VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento, "Abreviatura") == True:
                    print("Este Abreviatura ya pertence a un Partido")
                 dato = MensajeErrorValidacion(dato,campo, tipo)
                 dato = str(dato).upper()
@@ -98,7 +101,7 @@ def ValidacionesCampo(dato, campo, tipo):
                 elif str(dato).isdigit():
                     dato = int(dato)
                     if 0 < dato <= 999:
-                        if VerificarRepetidos(listaPartidosPoliticos, dato) == False:
+                        if VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento) == False:
                             flag = True
                         else:
                             print("Este Numero ya pertence a un Partido:", listaPartidosPoliticos[dato]["Nombre"]) 
@@ -116,7 +119,7 @@ def ValidacionesCampo(dato, campo, tipo):
                         break
                     dato = MensajeErrorValidacion(dato, campo, tipo)
                 dato = dato.upper()
-                flag = VerificarRepetidos(listaProvincias, dato, "Nombre")
+                flag = VerificarRepetidos(listaProvincias, dato, claveElemento,"Nombre")
                 if flag == True:
                     if tipo == "Modificar":
                         print("Provincia ya Existente, Recuerde si quiere Mantener la Informacion Dejelo el Campo en Blanco")
@@ -149,29 +152,26 @@ def ParametrizacionAlta():
                     clave = dato
                 else:
                     elemento[campo] = dato
-    confirmacion = EjecutarConfirmacion() 
+    
+    textoEscribir = ""
+    totalElementos = len(elemento)
+    indiceActual = 0
+    for propiedad, valor in elemento.items():
+        indiceActual += 1
+        textoEscribir += str(propiedad) + ": " + str(valor)
+        if indiceActual != totalElementos:
+            textoEscribir += " / "
+    print(str(clave) + ")",textoEscribir)
+
+    confirmacion = EjecutarConfirmacion()
     if confirmacion == True:
         listaATrabajar[clave] = elemento
-        print(deDondeVengo, "Registrado Correctamente")
+        print(deDondeVengo, "Registrado Existosamente")
     else:
         print(deDondeVengo, "No Registrado")
 
-#Funcion Parametrizacion Baja
-def ParametrizacionBaja():
-    print("parametrizacionBaja")
-
-#Funcion Parametrizacion Modificar
-def ParametrizacionModificar():
-    global deDondeVengo
-    print("Modificacion", deDondeVengo)
-    print("¿Desea Ver las Opciones?")
-    
-    if EjecutarConfirmacion("Si","No") == True:
-        ParametrizacionVer()
-    MensajeVolverAtras()
+def BuscarElementoLista(dato, listaATrabajar):
     encontrado = None
-    dato = input("Ingrese el campo a Modificar => ")
-    listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
     mostrarMensajeVolverAtras = 0
     while encontrado == None:
         if dato == "Volver Atras":
@@ -190,6 +190,49 @@ def ParametrizacionModificar():
         if encontrado == None:
             mostrarMensajeVolverAtras = MensajeVolverAtras(mostrarMensajeVolverAtras)
             dato = input("No se ha Encontrado el Campo, Por Favor Ingrese Nuevamente => ")
+    return encontrado
+
+#Funcion Parametrizacion Baja
+def ParametrizacionBaja():
+    global deDondeVengo
+    print("Baja", deDondeVengo)
+    ParametrizacionVer()
+    dato = input("Ingrese el elemento a Eliminar => ")
+    listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
+    dato = BuscarElementoLista(dato, listaATrabajar)
+
+    elemento = listaATrabajar[dato]
+    textoEscribir = ""
+    totalElementos = len(elemento)
+    indiceActual = 0
+    for propiedad, valor in elemento.items():
+        indiceActual += 1
+        textoEscribir += str(propiedad) + ": " + str(valor)
+        if indiceActual != totalElementos:
+            textoEscribir += " / "
+    print(str(clave) + ")",textoEscribir)
+
+    confirmacion = EjecutarConfirmacion() 
+    if confirmacion == True:
+        del listaATrabajar[dato]
+        print("Registrado Eliminado Existosamente")
+    else:
+        print("Registrado No Eliminado")
+
+#Funcion Parametrizacion Modificar
+def ParametrizacionModificar():
+    global deDondeVengo
+    print("Modificacion", deDondeVengo)
+    print("¿Desea Ver las Opciones?")
+    
+    if EjecutarConfirmacion("Si","No") == True:
+        ParametrizacionVer()
+    MensajeVolverAtras()
+    
+    dato = input("Ingrese el campo a Modificar => ")
+    listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
+    encontrado = BuscarElementoLista(dato, listaATrabajar)
+    
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
     elemento = {}
     clave = ""
@@ -203,12 +246,24 @@ def ParametrizacionModificar():
             if dato == "Volver Atras":
                 return
             else:
-                dato = ValidacionesCampo(dato, campo,"Modificar") 
+                dato = ValidacionesCampo(dato, campo,"Modificar", encontrado) 
                 if campo == datosDeCadaLista[deDondeVengo]["NombreClave"]:
                     clave = dato
                 else:
                     elemento[campo] = dato
+
+    textoEscribir = ""
+    totalElementos = len(elemento)
+    indiceActual = 0
+    for propiedad, valor in elemento.items():
+        indiceActual += 1
+        textoEscribir += str(propiedad) + ": " + str(valor)
+        if indiceActual != totalElementos:
+            textoEscribir += " / "
+    print(str(clave) + ")",textoEscribir)
+
     confirmacion = EjecutarConfirmacion()
+
     if confirmacion == True:
         del listaATrabajar[encontrado]
         listaATrabajar[clave] = elemento
