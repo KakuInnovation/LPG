@@ -356,12 +356,12 @@ opcionesABM = {
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
 listaPartidosPoliticos = {
-    1 :{"Nombre":"PSJ", "Abreviatura":"PSJ" },
-    2 :{"Nombre":"AAA", "Abreviatura":"AAA"},
-    3 :{"Nombre":"BBB", "Abreviatura":"BBB"},
-    4 :{"Nombre":"CCC", "Abreviatura":"CCC"},
-    5 :{"Nombre":"DDD", "Abreviatura":"DDD"},
-    6 :{"Nombre":"EEE", "Abreviatura":"EEE"},
+    1 :{"Nombre":"FRENTE DE TODOS", "Abreviatura":"FDT" },
+    2 :{"Nombre":"JUNTOS POR EL CAMBIO", "Abreviatura":"GXS"},
+    3 :{"Nombre":"LIBERTRAIOS", "Abreviatura":"LIB"},
+    4 :{"Nombre":"PERONISMO FEDERAL", "Abreviatura":"PF"},
+    5 :{"Nombre":"FRENTE DE IZQUIERDA", "Abreviatura":"FDI"},
+    6 :{"Nombre":"LIBRES DEL SUR", "Abreviatura":"LBS"},
 }
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
