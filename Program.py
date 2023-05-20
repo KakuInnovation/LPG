@@ -74,28 +74,22 @@ def ValidacionesCampo(dato, campo, tipo):
     flag = False
     if deDondeVengo == "Partidos Politicos":
         if campo=="Nombre":
-            if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
-                   print("Este Nombre ya pertence a un Partido")
-                   dato = None
-            while (not ValidacionUnicamenteTexto(dato)) or dato == "":
+            while (not ValidacionUnicamenteTexto(dato)) or dato == "" or VerificarRepetidos(listaPartidosPoliticos, dato, "Nombre") :
                 if dato == "" and tipo == "Modificar":
                     break
-                dato = MensajeErrorValidacion(dato, campo, tipo)
-                if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
+                if VerificarRepetidos(listaPartidosPoliticos, dato, "Nombre") == True:
                    print("Este Nombre ya pertence a un Partido")
-                   dato = None
+                dato = MensajeErrorValidacion(dato, campo, tipo)
+                dato = str(dato).upper()
             dato = dato.upper()
         elif campo == "Abreviatura":
-            if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
-                   print("Este Abreviatura ya pertence a un Partido")
-                   dato = None
-            while (not dato.isalpha()) or len(dato) != 3:
+            while (not dato.isalpha()) or len(dato) != 3 or VerificarRepetidos(listaPartidosPoliticos, dato, "Abreviatura"):
                 if dato == "" and tipo == "Modificar":
                     break
-                dato = MensajeErrorValidacion(dato,campo, tipo)
-                if VerificarRepetidos(listaPartidosPoliticos, dato) == True:
+                if VerificarRepetidos(listaPartidosPoliticos, dato, "Abreviatura") == True:
                    print("Este Abreviatura ya pertence a un Partido")
-                   dato = None
+                dato = MensajeErrorValidacion(dato,campo, tipo)
+                dato = str(dato).upper()
             dato = dato.upper() 
         elif campo == "Numero del Partido":
             while flag == False:
