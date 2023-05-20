@@ -61,7 +61,7 @@ def MensajeVolverAtras(cantidad = 0):
 def VerificarRepetidos(lista, dato, claveElemento = "", campo = ""):
     for clave, opcion in lista.items():
         if campo == "":
-            if str(clave) == str(dato):
+            if str(clave) == str(claveElemento):
                 return True
         else:
             if opcion[campo] == dato:
@@ -94,14 +94,14 @@ def ValidacionesCampo(dato, campo, tipo, claveElemento = ""):
                 dato = MensajeErrorValidacion(dato,campo, tipo)
                 dato = str(dato).upper()
             dato = dato.upper() 
-        elif campo == "Numero del Partido":
+        elif campo == "Numero":
             while flag == False:
                 if dato == "" and tipo == "Modificar":
                     break
                 elif str(dato).isdigit():
                     dato = int(dato)
                     if 0 < dato <= 999:
-                        if VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento) == False:
+                        if VerificarRepetidos(listaPartidosPoliticos, dato, claveElemento,"Numero") == False:
                             flag = True
                         else:
                             print("Este Numero ya pertence a un Partido:", listaPartidosPoliticos[dato]["Nombre"]) 
@@ -133,26 +133,17 @@ def ParametrizacionAlta():
     global deDondeVengo
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
     listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
-    clave = ""
     elemento = {}
     print("Alta", deDondeVengo)
     MensajeVolverAtras()
     for campo in opciones:
-        if campo == "ClaveAutoIncrimental":
-            clave = len(listaATrabajar) + 1
+        dato = input("Ingrese " + campo + " => ")
+        if dato == "Volver Atras":
+            return
         else:
-            if campo == "Clave":
-                campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
-            dato = input("Ingrese " + campo + " => ")
-            if dato == "Volver Atras":
-                return
-            else:
-                dato = ValidacionesCampo(dato, campo,"Alta") 
-                if campo == datosDeCadaLista[deDondeVengo]["NombreClave"]:
-                    clave = dato
-                else:
-                    elemento[campo] = dato
-    
+            elemento[campo] = ValidacionesCampo(dato, campo,"Alta") 
+
+    clave = max(listaATrabajar.keys()) + 1
     textoEscribir = ""
     totalElementos = len(elemento)
     indiceActual = 0
@@ -170,6 +161,7 @@ def ParametrizacionAlta():
     else:
         print(deDondeVengo, "No Registrado")
 
+#Funcion que suplanta al find
 def BuscarElementoLista(dato, listaATrabajar):
     encontrado = None
     mostrarMensajeVolverAtras = 0
@@ -234,22 +226,15 @@ def ParametrizacionModificar():
     
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
     elemento = {}
-    clave = ""
+    
     for campo in opciones:
-        if campo == "ClaveAutoIncrimental":
-            clave = len(listaATrabajar) + 1
-        else:
-            if campo == "Clave":
-                campo = datosDeCadaLista[deDondeVengo]["NombreClave"]
-            dato = input("Ingrese " + campo + " => ")
-            if dato == "Volver Atras":
+        dato = input("Ingrese " + campo + " => ")
+        if dato == "Volver Atras":
                 return
-            else:
-                dato = ValidacionesCampo(dato, campo,"Modificar", encontrado) 
-                if campo == datosDeCadaLista[deDondeVengo]["NombreClave"]:
-                    clave = dato
-                else:
-                    elemento[campo] = dato
+        else:
+            elemento[campo] = ValidacionesCampo(dato, campo, "Modificar", encontrado) 
+
+    clave = max(listaATrabajar.keys()) + 1
 
     textoEscribir = ""
     totalElementos = len(elemento)
@@ -259,7 +244,7 @@ def ParametrizacionModificar():
         textoEscribir += str(propiedad) + ": " + str(valor)
         if indiceActual != totalElementos:
             textoEscribir += " / "
-    print(str(clave) + ")",textoEscribir)
+    print("Nuevo Elemetno)",textoEscribir)
 
     confirmacion = EjecutarConfirmacion()
 
@@ -279,9 +264,11 @@ def ParametrizacionVer():
     elif deDondeVengo == "Regiones Geograficas":
         lista = listaProvincias
     
+    valorOpcion = 0
     if lista != None:
         print(deDondeVengo)
         for clave, obj in lista.items():
+            valorOpcion += 1
             textoEscribir = ""
             totalElementos = len(obj)
             indiceActual = 0
@@ -290,7 +277,7 @@ def ParametrizacionVer():
                 textoEscribir += str(propiedad) + ": " + str(valor)
                 if indiceActual != totalElementos:
                     textoEscribir += " / "
-            print(str(clave) + ")",textoEscribir)
+            print(str(valorOpcion) + ")",textoEscribir)
     else:
         print("No hay", deDondeVengo, "Cargadas")
     input("Pulse Enter para Continuar ")
@@ -356,20 +343,22 @@ opcionesABM = {
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
 listaPartidosPoliticos = {
-    1 :{"Nombre":"FRENTE DE TODOS", "Abreviatura":"FDT" },
-    2 :{"Nombre":"JUNTOS POR EL CAMBIO", "Abreviatura":"GXS"},
-    3 :{"Nombre":"LIBERTRAIOS", "Abreviatura":"LIB"},
-    4 :{"Nombre":"PERONISMO FEDERAL", "Abreviatura":"PF"},
-    5 :{"Nombre":"FRENTE DE IZQUIERDA", "Abreviatura":"FDI"},
-    6 :{"Nombre":"LIBRES DEL SUR", "Abreviatura":"LBS"},
+    1 :{"Nombre":"FRENTE DE TODOS", "Abreviatura":"FDT", "Numero": 1 },
+    2 :{"Nombre":"JUNTOS POR EL CAMBIO", "Abreviatura":"JXC", "Numero": 2},
+    3 :{"Nombre":"LIBERTRAIOS", "Abreviatura":"LIB", "Numero": 3},
+    4 :{"Nombre":"PERONISMO FEDERAL", "Abreviatura":"PFE", "Numero": 4},
+    5 :{"Nombre":"FRENTE DE IZQUIERDA", "Abreviatura":"FDI", "Numero": 5},
+    6 :{"Nombre":"LIBRES DEL SUR", "Abreviatura":"LBS", "Numero": 6},
 }
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
-listaProvincias = {}
+listaProvincias = {
+    1 :{"Nombre":"CABA"}
+}
 
 datosDeCadaLista = {
-    "Partidos Politicos": {"ElementosSolicitar":["Nombre", "Abreviatura", "Clave"], "Lista":listaPartidosPoliticos, "NombreClave": "Numero del Partido"},
-    "Regiones Geograficas": {"ElementosSolicitar":["ClaveAutoIncrimental","Nombre"],"Lista":listaProvincias}
+    "Partidos Politicos": {"ElementosSolicitar":["Nombre", "Abreviatura", "Numero"], "Lista":listaPartidosPoliticos},
+    "Regiones Geograficas": {"ElementosSolicitar":["Nombre"],"Lista":listaProvincias}
 }
 
 # Diccionario de opciones y Funciones asociadas Menu Parametizacion
