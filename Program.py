@@ -183,7 +183,6 @@ def BuscarElementoLista(dato, listaATrabajar):
                     break
                 elif "Nombre" in opciones:
                     dato = str(dato).upper()
-                    print (opciones["Nombre"])
                     if dato == opciones["Nombre"]:
                         encontrado = clave
                         break
@@ -210,7 +209,7 @@ def ParametrizacionBaja():
         textoEscribir += str(propiedad) + ": " + str(valor)
         if indiceActual != totalElementos:
             textoEscribir += " / "
-    print(str(clave) + ")",textoEscribir)
+    print(str(dato) + ")",textoEscribir)
 
     confirmacion = EjecutarConfirmacion() 
     if confirmacion == True:
