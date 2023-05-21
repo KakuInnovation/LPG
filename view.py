@@ -34,20 +34,45 @@ class View:
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
         self.listaPartidosPoliticos = {
-            1: {"Nombre": "PSJ", "Abreviatura": "PSJ"},
-            2: {"Nombre": "AAA", "Abreviatura": "AAA"},
-            3: {"Nombre": "BBB", "Abreviatura": "BBB"},
-            4: {"Nombre": "CCC", "Abreviatura": "CCC"},
-            5: {"Nombre": "DDD", "Abreviatura": "DDD"},
-            6: {"Nombre": "EEE", "Abreviatura": "EEE"},
+            1: {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Numero": 1},
+            2: {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Numero": 2},
+            3: {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Numero": 3},
+            4: {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Numero": 4},
+            5: {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Numero": 5},
+            6: {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Numero": 6},
         }
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
-        self.listaProvincias = {}
+        self.listaProvincias = {
+            1: {"Nombre": "CABA", "Numero": 1},
+            2: {"Nombre": "BUENOS AIRES", "Numero": 2},
+            3: {"Nombre": "CATAMARCA", "Numero": 3},
+            4: {"Nombre": "CHACO", "Numero": 4},
+            5: {"Nombre": "CHUBUT", "Numero": 5},
+            6: {"Nombre": "CORDOBA", "Numero": 6},
+            7: {"Nombre": "CORRIENTES", "Numero": 7},
+            8: {"Nombre": "ENTRE RIOS", "Numero": 8},
+            9: {"Nombre": "FORMOSA", "Numero": 9},
+            10: {"Nombre": "JUJUY", "Numero": 10},
+            11: {"Nombre": "LA PAMPA", "Numero": 11},
+            12: {"Nombre": "LA RIOJA", "Numero": 12},
+            13: {"Nombre": "MENDOZA", "Numero": 13},
+            14: {"Nombre": "MISIONES", "Numero": 14},
+            15: {"Nombre": "NEUQUEN", "Numero": 15},
+            16: {"Nombre": "RIO NEGRO", "Numero": 16},
+            17: {"Nombre": "SALTA", "Numero": 17},
+            18: {"Nombre": "SAN JUAN", "Numero": 18},
+            19: {"Nombre": "SAN LUIS", "Numero": 19},
+            20: {"Nombre": "SANTA CRUZ", "Numero": 20},
+            21: {"Nombre": "SANTA FE", "Numero": 21},
+            22: {"Nombre": "SANTIAGO DEL ESTERO", "Numero": 22},
+            23: {"Nombre": "TIERRA DEL FUEGO", "Numero": 23},
+            24: {"Nombre": "TUCUMAN", "Numero": 24}
+        }
 
         self.datosDeCadaLista = {
-            "Partidos Politicos": {"ElementosSolicitar": ["Nombre", "Abreviatura", "Clave"], "Lista": self.listaPartidosPoliticos, "NombreClave": "Numero del Partido"},
-            "Regiones Geograficas": {"ElementosSolicitar": ["ClaveAutoIncrimental", "Nombre"], "Lista": self.listaProvincias}
+            "Partidos Politicos": {"ElementosSolicitar": ["Nombre", "Abreviatura", "Numero"], "Lista": self.listaPartidosPoliticos},
+            "Regiones Geograficas": {"ElementosSolicitar": ["Nombre", "Numero"], "Lista": self.listaProvincias}
         }
 
     def main(self):
@@ -138,13 +163,13 @@ class View:
 
     # Funcion Descargar Partidos politicos
     def DecargarPartidosPoliticos(self):
-        print("Descargado...")
+        print("Descargado Partidos Políticos...")
         self.controller.decargarPartidosPoliticos(self.listaATrabajar)
 
     # Funcion Descargar Regiones Geograficas
     def DecargarRegionesGeograficas(self):
-        print("Descargado...")
-        self.controller.decargarRegionesGeograficas()
+        print("Descargado Regiones Geográficas...")
+        self.controller.decargarRegionesGeograficas(self.listaATrabajar)
 
     # Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
     def MensajeErrorValidacion(self, dato, campo, tipo):
@@ -169,24 +194,27 @@ class View:
         cantidad += 1
         return cantidad
 
-    def VerificarRepetidos(self, lista, dato, campo=""):
+# Funcion para verificar si esta el elemento en la lista, claveElemento es para si son iguales permitirmos continuar el proceso
+    def VerificarRepetidos(self, lista, dato, claveElemento="", campo=""):
         for clave, opcion in lista.items():
             if campo == "":
-                if str(clave) == str(dato):
+                if str(clave) == str(claveElemento):
                     return True
             else:
                 if opcion[campo] == dato:
-                    return True
+                    if str(clave) == claveElemento or opcion["Nombre"] == claveElemento:
+                        return False
+                    else:
+                        return True
         return False
 
-    # funcion para validar cada dato de las altas
-
-    def ValidacionesCampo(self, dato, campo, tipo):
+# funcion para validar cada dato d e las altas
+    def ValidacionesCampo(self, dato, campo, tipo, claveElemento=""):
         # global deDondeVengo
         flag = False
         if self.deDondeVengo == "Partidos Politicos":
             if campo == "Nombre":
-                while (not self.ValidacionUnicamenteTexto(dato)) or dato == "" or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, "Nombre"):
+                while dato == "" or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Nombre"):
                     if dato == "" and tipo == "Modificar":
                         break
                     if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, "Nombre") == True:
@@ -195,29 +223,26 @@ class View:
                     dato = str(dato).upper()
                 dato = dato.upper()
             elif campo == "Abreviatura":
-                while (not dato.isalpha()) or len(dato) != 3 or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, "Abreviatura"):
+                while (not dato.isalpha()) or len(dato) != 3 or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Abreviatura"):
                     if dato == "" and tipo == "Modificar":
                         break
-                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, "Abreviatura") == True:
+                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Abreviatura") == True:
                         print("Este Abreviatura ya pertence a un Partido")
                     dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = str(dato).upper()
                 dato = dato.upper()
-            elif campo == "Numero del Partido":
+            elif campo == "Numero":
                 while flag == False:
                     if dato == "" and tipo == "Modificar":
                         break
                     elif str(dato).isdigit():
                         dato = int(dato)
                         if 0 < dato <= 999:
-                            if self.VerificarRepetidos(self.listaPartidosPoliticos, dato) == False:
+                            if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Numero") == False:
                                 flag = True
                             else:
                                 print("Este Numero ya pertence a un Partido:",
                                       self.listaPartidosPoliticos[dato]["Nombre"])
-                        else:
-                            dato = self.MensajeErrorValidacion(
-                                dato, campo, tipo)
                     # no cambiar a elif
                     if flag == False:
                         dato = self.MensajeErrorValidacion(dato, campo, tipo)
@@ -231,7 +256,7 @@ class View:
                         dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = dato.upper()
                     flag = self.VerificarRepetidos(
-                        self.listaProvincias, dato, "Nombre")
+                        self.listaProvincias, dato, claveElemento, "Nombre")
                     if flag == True:
                         if tipo == "Modificar":
                             print(
@@ -248,60 +273,48 @@ class View:
         # global deDondeVengo
         opciones = self.datosDeCadaLista[self.deDondeVengo]["ElementosSolicitar"]
         self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
-        clave = ""
         elemento = {}
         print("Alta", self.deDondeVengo)
         self.MensajeVolverAtras()
         for campo in opciones:
-            if campo == "ClaveAutoIncrimental":
-                clave = len(self.listaATrabajar) + 1
+            dato = input("Ingrese " + campo + " => ")
+            if dato == "Volver Atras":
+                return
             else:
-                if campo == "Clave":
-                    campo = self.datosDeCadaLista[self.deDondeVengo]["NombreClave"]
-                dato = input("Ingrese " + campo + " => ")
-                if dato == "Volver Atras":
-                    return
-                else:
-                    dato = self.ValidacionesCampo(dato, campo, "Alta")
-                    if campo == self.datosDeCadaLista[self.deDondeVengo]["NombreClave"]:
-                        clave = dato
-                    else:
-                        elemento[campo] = dato
+                elemento[campo] = self.ValidacionesCampo(dato, campo, "Alta")
+
+        clave = max(self.listaATrabajar.keys()) + 1
+        textoEscribir = ""
+        totalElementos = len(elemento)
+        indiceActual = 0
+        for propiedad, valor in elemento.items():
+            indiceActual += 1
+            textoEscribir += str(propiedad) + ": " + str(valor)
+            if indiceActual != totalElementos:
+                textoEscribir += " / "
+        print(str(clave) + ")", textoEscribir)
+
         confirmacion = self.EjecutarConfirmacion()
         if confirmacion == True:
             self.listaATrabajar[clave] = elemento
-            print(self.deDondeVengo, "Registrado Correctamente")
+            print(self.deDondeVengo, "Registrado Existosamente")
         else:
             print(self.deDondeVengo, "No Registrado")
 
-    # Funcion Parametrizacion Baja
-    def ParametrizacionBaja(self):
-        print("parametrizacionBaja")
-
-    # Funcion Parametrizacion Modificar
-    def ParametrizacionModificar(self):
-        # global deDondeVengo
-        print("Modificacion", self.deDondeVengo)
-        print("¿Desea Ver las Opciones?")
-
-        if self.EjecutarConfirmacion("Si", "No") == True:
-            self.ParametrizacionVer()
-        self.MensajeVolverAtras()
+# Funcion que suplanta al find
+    def BuscarElementoLista(self, dato, listaATrabajar):
         encontrado = None
-        dato = input("Ingrese el campo a Modificar => ")
-        self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
         mostrarMensajeVolverAtras = 0
         while encontrado == None:
             if dato == "Volver Atras":
                 return
             else:
-                for clave, opciones in self.listaATrabajar.items():
+                for clave, opciones in listaATrabajar.items():
                     if str(clave) == str(dato):
                         encontrado = clave
                         break
                     elif "Nombre" in opciones:
                         dato = str(dato).upper()
-                        print(opciones["Nombre"])
                         if dato == opciones["Nombre"]:
                             encontrado = clave
                             break
@@ -310,25 +323,79 @@ class View:
                     mostrarMensajeVolverAtras)
                 dato = input(
                     "No se ha Encontrado el Campo, Por Favor Ingrese Nuevamente => ")
+        return encontrado
+
+# Funcion Parametrizacion Baja
+    def ParametrizacionBaja(self):
+        # global deDondeVengo
+        print("Baja", self.deDondeVengo)
+        self.ParametrizacionVer()
+        dato = input("Ingrese el elemento a Eliminar => ")
+        if dato == "Volver Atras":
+            return
+        self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
+        dato = self.BuscarElementoLista(dato, self.listaATrabajar)
+
+        elemento = self.listaATrabajar[dato]
+        textoEscribir = ""
+        totalElementos = len(elemento)
+        indiceActual = 0
+        for propiedad, valor in elemento.items():
+            indiceActual += 1
+            textoEscribir += str(propiedad) + ": " + str(valor)
+            if indiceActual != totalElementos:
+                textoEscribir += " / "
+        print(str(dato) + ")", textoEscribir)
+
+        confirmacion = self.EjecutarConfirmacion()
+        if confirmacion == True:
+            del self.listaATrabajar[dato]
+            print("Registrado Eliminado Existosamente")
+        else:
+            print("Registrado No Eliminado")
+
+# Funcion Parametrizacion Modificar
+    def ParametrizacionModificar(self):
+        # global deDondeVengo
+        print("Modificacion", self.deDondeVengo)
+        print("¿Desea Ver las Opciones?")
+
+        if self.EjecutarConfirmacion("Si", "No") == True:
+            self.ParametrizacionVer()
+        self.MensajeVolverAtras()
+
+        dato = input("Ingrese el campo a Modificar => ")
+        if dato == "Volver Atras":
+            return
+
+        self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
+        encontrado = self.BuscarElementoLista(dato, self.listaATrabajar)
+
         opciones = self.datosDeCadaLista[self.deDondeVengo]["ElementosSolicitar"]
         elemento = {}
-        clave = ""
+
         for campo in opciones:
-            if campo == "ClaveAutoIncrimental":
-                clave = len(self.listaATrabajar) + 1
+            dato = input("Ingrese " + campo + " => ")
+            if dato == "Volver Atras":
+                return
             else:
-                if campo == "Clave":
-                    campo = self.datosDeCadaLista[self.deDondeVengo]["NombreClave"]
-                dato = input("Ingrese " + campo + " => ")
-                if dato == "Volver Atras":
-                    return
-                else:
-                    dato = self.ValidacionesCampo(dato, campo, "Modificar")
-                    if campo == self.datosDeCadaLista[self.deDondeVengo]["NombreClave"]:
-                        clave = dato
-                    else:
-                        elemento[campo] = dato
+                elemento[campo] = self.ValidacionesCampo(
+                    dato, campo, "Modificar", encontrado)
+
+        clave = max(self.listaATrabajar.keys()) + 1
+
+        textoEscribir = ""
+        totalElementos = len(elemento)
+        indiceActual = 0
+        for propiedad, valor in elemento.items():
+            indiceActual += 1
+            textoEscribir += str(propiedad) + ": " + str(valor)
+            if indiceActual != totalElementos:
+                textoEscribir += " / "
+        print("Nuevo Elemetno)", textoEscribir)
+
         confirmacion = self.EjecutarConfirmacion()
+
         if confirmacion == True:
             del self.listaATrabajar[encontrado]
             self.listaATrabajar[clave] = elemento
@@ -336,7 +403,7 @@ class View:
         else:
             print("Cambio No Registrado")
 
-    # Funcion Parametrizacion Ver
+# Funcion Parametrizacion Ver
     def ParametrizacionVer(self):
         # global deDondeVengo
         lista = None
@@ -345,9 +412,11 @@ class View:
         elif self.deDondeVengo == "Regiones Geograficas":
             lista = self.listaProvincias
 
+        valorOpcion = 0
         if lista != None:
             print(self.deDondeVengo)
             for clave, obj in lista.items():
+                valorOpcion += 1
                 textoEscribir = ""
                 totalElementos = len(obj)
                 indiceActual = 0
@@ -356,7 +425,10 @@ class View:
                     textoEscribir += str(propiedad) + ": " + str(valor)
                     if indiceActual != totalElementos:
                         textoEscribir += " / "
-                print(str(clave) + ")", textoEscribir)
+                print(str(valorOpcion) + ")", textoEscribir)
+        else:
+            print("No hay", self.deDondeVengo, "Cargadas")
+        input("Pulse Enter para Continuar ")
 
     # Funcion menu Generico
     def MenuGenerico(self, menu, titulo):
