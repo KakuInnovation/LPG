@@ -368,7 +368,10 @@ class View:
             else:
                 elemento[campo] = self.ValidacionesCampo(
                     dato, campo, "Modificar", encontrado)
-
+                
+        if dato == "Volver Atras":
+            return
+        
         clave = max(self.listaATrabajar.keys()) + 1
 
         textoEscribir = ""
