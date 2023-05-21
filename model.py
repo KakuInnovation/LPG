@@ -22,9 +22,12 @@ class Model:
                     registro = str(reg["Codigo"]) + ";" + reg["Nombre"] + "\n"
                     str(registro)
                     f.write(registro)
+            except:
+                print("Error al escribir el Archivo")
             finally:
                 f.close()
-
+                print("Archivo Generado")
+                
     def writePartidosPoliticos(self, info):
         if info != None:
             #print("Partidos Políticos of Model")
@@ -37,5 +40,8 @@ class Model:
                         reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
                     str(registro)
                     f.write(registro)
+            except:
+                print("Error al escribir el Archivo")
             finally:
                 f.close()
+                print("Archivo Generado")

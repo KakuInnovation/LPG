@@ -19,6 +19,8 @@ UADE Copa Algoritmia 2023
     - Funcionlidad Pedida: Los cargos a elegir serán presidente y vicepresidente (código 1), diputado (2), senador (3), gobernador y vicegobernador (4). Estos datos no deberán ser ingresados ya que se encuentran preestablecidos. Para simplificar el proceso se omiten cargos de menor nivel como intendentes y concejales.
     - Mensaje: Hola Ivan buenas tardes, la idea de la primera etapa es que generen los datos con los que van a trabajar el resto de las etapas. En este caso tienen que generar los procesos repetitivos correspondientes con sus respectivas validaciones para lograr ingresar el conjunto de los datos con los que vamos a trabajar. En esta etapa se les pide que estos datos queden guardados en archivos CSV (texto plano donde cada uno de los campos dentro del registro queda separado por - ; - (punto y coma). En esta primera estapa NO HAY VOTACION. 
 - Para mejorar la UX (experencia de usuario), hemos mejorado la funcionlidad de corte de ingreso de datos (ingresar "FIN"), por un menu dinamico y amigable para el usuario
+- En caso de querer usar datos precargados se pueden tomar en archivos datosTemplete y reemplazar en los atributos del contructor de la clase view
+- En Archivos Generados ya se encuentrar los archivos de salida solicitados, y en caso de querer generarlos estos se veran en la carpeta del proyecto en la carpeta db
 
 ## Funcionamiento
 - Menus: Nuestro Programa esta usando menus de consola para acceder a todas las funcionalidad. 

@@ -34,40 +34,10 @@ class View:
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
         self.listaPartidosPoliticos = {
-            1: {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Lista": "1"},
-            2: {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Lista": "2"},
-            3: {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Lista": "3"},
-            4: {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Lista": "4"},
-            5: {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Lista": "5"},
-            6: {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Lista": "6"},
         }
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
         self.listaProvincias = {
-            1: {"Nombre": "CABA", "Codigo": "1"},
-            2: {"Nombre": "BUENOS AIRES", "Codigo": "2"},
-            3: {"Nombre": "CATAMARCA", "Codigo": "3"},
-            4: {"Nombre": "CHACO", "Codigo": "4"},
-            5: {"Nombre": "CHUBUT", "Codigo": "5"},
-            6: {"Nombre": "CORDOBA", "Codigo": "6"},
-            7: {"Nombre": "CORRIENTES", "Codigo": "7"},
-            8: {"Nombre": "ENTRE RIOS", "Codigo": "8"},
-            9: {"Nombre": "FORMOSA", "Codigo": "9"},
-            10: {"Nombre": "JUJUY", "Codigo": "10"},
-            11: {"Nombre": "LA PAMPA", "Codigo": "11"},
-            12: {"Nombre": "LA RIOJA", "Codigo": "12"},
-            13: {"Nombre": "MENDOZA", "Codigo": "13"},
-            14: {"Nombre": "MISIONES", "Codigo": "14"},
-            15: {"Nombre": "NEUQUEN", "Codigo": "15"},
-            16: {"Nombre": "RIO NEGRO", "Codigo": "16"},
-            17: {"Nombre": "SALTA", "Codigo": "17"},
-            18: {"Nombre": "SAN JUAN", "Codigo": "18"},
-            19: {"Nombre": "SAN LUIS", "Codigo": "19"},
-            20: {"Nombre": "SANTA CRUZ", "Codigo": "20"},
-            21: {"Nombre": "SANTA FE", "Codigo": "21"},
-            22: {"Nombre": "SANTIAGO DEL ESTERO", "Codigo": "22"},
-            23: {"Nombre": "TIERRA DEL FUEGO", "Codigo": "23"},
-            24: {"Nombre": "TUCUMAN", "Codigo": "24"}
         }
 
         self.datosDeCadaLista = {
@@ -164,16 +134,18 @@ class View:
     # Funcion Descargar Partidos politicos
     def DecargarPartidosPoliticos(self):
         print("Descargado Partidos Politicos...")
-        self.listaATrabajar = self.datosDeCadaLista["Partidos Politicos"]["Lista"]
+        self.deDondeVengo = "Partidos Politicos"
+        self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
         self.controller.decargarPartidosPoliticos(self.listaATrabajar)
-        self.prametrizacionVer()
+        self.ParametrizacionVer()
 
     # Funcion Descargar Regiones Geograficas
     def DecargarRegionesGeograficas(self):
         print("Descargado Regiones Geograficas...")
-        self.listaATrabajar = self.datosDeCadaLista["Regiones Geograficas"]["Lista"]
+        self.deDondeVengo = "Regiones Geograficas"
+        self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
         self.controller.decargarRegionesGeograficas(self.listaATrabajar)
-        self.prametrizacionVer()
+        self.ParametrizacionVer()
 
     # Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
     def MensajeErrorValidacion(self, dato, campo, tipo):
