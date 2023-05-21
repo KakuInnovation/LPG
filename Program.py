@@ -1,4 +1,4 @@
-#Mostrar Opciones Menu Principal
+# Mostrar Opciones Menu Principal
 def MostrarOpcionesMenuPrincipal():
     for opcion, Funcion in opcionesMenuPrincipal.items():
         print(f"{opcion}) {Funcion['Descripcion']}")
@@ -25,16 +25,22 @@ def EjecutarConfirmacion(si = "Confirmar", no = "Cancelar"):
         else:
             print("Opcion invalida. Por favor, selecciona nuevamente.")
 
-#verificamos si no hay simbolos
+# verificamos si no hay simbolos
+
+
 def ValidacionUnicamenteTexto(texto):
     textoSinEspacios = texto.replace(" ", "")
     return textoSinEspacios.isalpha()
 
-#Funcion Descargar Partidos politicos
+# Funcion Descargar Partidos politicos
+
+
 def DecargarPartidosPoliticos():
     print("Descargado")
 
-#Funcion Descargar Regiones Geograficas
+# Funcion Descargar Regiones Geograficas
+
+
 def DecargarRegionesGeograficas():
     print("Descargado")
 
@@ -126,7 +132,9 @@ def ValidacionesCampo(dato, campo, tipo, claveElemento = ""):
                         dato = input("Provincia ya Existente, Ingrese el "+ campo + " nuevamente => ")
     return dato
 
-#Funcion que redirige a la funcion de alta espesifica
+# Funcion que redirige a la funcion de alta espesifica
+
+
 def ParametrizacionAlta():
     global deDondeVengo
     opciones = datosDeCadaLista[deDondeVengo]["ElementosSolicitar"]
@@ -285,26 +293,26 @@ def ParametrizacionVer():
         print("No hay", deDondeVengo, "Cargadas")
     input("Pulse Enter para Continuar ")
 
-#Funcion menu Generico
 def MenuGenerico(menu, titulo):
     salir = False
     global salirAlMenuPrincipal
     global deDondeVengo
     while salir == False and salirAlMenuPrincipal == False:
         deDondeVengo = titulo
-        tituloMostrar="Menu " + titulo
+        tituloMostrar = "Menu " + titulo
         print(tituloMostrar)
-        #mostramos opciones
+        # mostramos opciones
         MostrarOpcionesMenu(menu)
 
-        #solicitamos opcion
+        # solicitamos opcion
         seleccion = input("Por favor, selecciona una opcion => ")
 
-        #seleccionamos de nuestras opciones mediante su clave
+        # seleccionamos de nuestras opciones mediante su clave
         if seleccion in menu:
             opcion = menu[seleccion]
             if "Menu" in opcion:
-                opcion["Funcion"](opcion["Menu"],opcion["Descripcion"])  # Llama a la funcion correspondiente
+                # Llama a la funcion correspondiente
+                opcion["Funcion"](opcion["Menu"], opcion["Descripcion"])
             else:
                 opcion["Funcion"]()  # Llama a la funcion correspondiente1
             salir = False
@@ -313,22 +321,26 @@ def MenuGenerico(menu, titulo):
             for clave, opcion in menu.items():
                 if opcion["Descripcion"] == seleccion:
                     if "Menu" in opcion:
-                        opcion["Funcion"](opcion["Menu"],opcion["Descripcion"])  # Llama a la funcion correspondiente
+                        # Llama a la funcion correspondiente
+                        opcion["Funcion"](
+                            opcion["Menu"], opcion["Descripcion"])
                     else:
-                        opcion["Funcion"]()  # Llama a la funcion correspondiente1
+                        # Llama a la funcion correspondiente1
+                        opcion["Funcion"]()
                     salir = False
 
-        #si la opcion es 1 mas que la lista 
+        # si la opcion es 1 mas que la lista
         elif seleccion == str(len(menu) + 1) or seleccion == "Volver":
             salir = True
-            #finaliza el programa
+            # finaliza el programa
             break
         elif seleccion == str(len(menu) + 2) or seleccion == "Menu Principal":
             salirAlMenuPrincipal = True
-            #finaliza el programa
+            # finaliza el programa
             break
         else:
             print("Opcion invalida. Por favor, selecciona nuevamente.")
+
 
 # Diccionario de opciones y Funciones asociadas Menu Descarga Archivos
 opcionesMenuDescargaArchivos = {
@@ -388,50 +400,50 @@ datosDeCadaLista = {
 }
 
 # Diccionario de opciones y Funciones asociadas Menu Parametizacion
-opcionesMenuParametrizacion= {
-    "1": {"Descripcion": "Partidos Politicos", "Funcion": MenuGenerico, "Menu":opcionesABM},
-    "2": {"Descripcion": "Regiones Geograficas", "Funcion": MenuGenerico, "Menu":opcionesABM}
+opcionesMenuParametrizacion = {
+    "1": {"Descripcion": "Partidos Politicos", "Funcion": MenuGenerico, "Menu": opcionesABM},
+    "2": {"Descripcion": "Regiones Geograficas", "Funcion": MenuGenerico, "Menu": opcionesABM}
 }
 
 # Diccionario de opciones y Funciones asociadas Menu Principal
 opcionesMenuPrincipal = {
-    "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu":opcionesMenuParametrizacion},
-    "2": {"Descripcion": "Descarga de Archivos", "Funcion": MenuGenerico, "Menu":opcionesMenuDescargaArchivos}
+    "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
+    "2": {"Descripcion": "Descarga de Archivos", "Funcion": MenuGenerico, "Menu": opcionesMenuDescargaArchivos}
 }
 
-#Funcion del menu principal
+# Funcion del menu principal
 while True:
-    #definimos esta variable como global para que pueda ser consumida por cualquier Funcion
+    # definimos esta variable como global para que pueda ser consumida por cualquier Funcion
     global salirAlMenuPrincipal
     global deDondeVengo
-    #verifiacmos que la variable ya existe o todavia no tiene un valor (es decir la primera vez que se ejecuta el codigo)
+    # verifiacmos que la variable ya existe o todavia no tiene un valor (es decir la primera vez que se ejecuta el codigo)
     if 'salirAlMenuPrincipal' in globals():
         if salirAlMenuPrincipal != False:
             print("Bienvenido al Sistema de Elecciones Presidenciales")
     salirAlMenuPrincipal = False
     deDondeVengo = "MenuPrincipal"
-    #mostramos opciones
+    # mostramos opciones
     MostrarOpcionesMenuPrincipal()
 
-    #solicitamos opcion
+    # solicitamos opcion
     seleccion = input("Por favor, selecciona una opcion => ")
 
-    
-    #seleccionamos de nuestras opciones mediante su clave (la hacemos por separado ya que se espera que se ingrese numeros generando asi no tener que recorrer el objeto)
+    # seleccionamos de nuestras opciones mediante su clave (la hacemos por separado ya que se espera que se ingrese numeros generando asi no tener que recorrer el objeto)
     if seleccion in opcionesMenuPrincipal:
-        opcion = opcionesMenuPrincipal[seleccion] #buscamos la opcion seleccionada
-        opcion["Funcion"](opcion["Menu"],opcion["Descripcion"])  # Llama a la funcion correspondiente
-    #seleccionamos de nuestras opciones mediante su desciocion
+        # buscamos la opcion seleccionada
+        opcion = opcionesMenuPrincipal[seleccion]
+        # Llama a la funcion correspondiente
+        opcion["Funcion"](opcion["Menu"], opcion["Descripcion"])
+    # seleccionamos de nuestras opciones mediante su desciocion
     elif seleccion in [opcion["Descripcion"] for opcion in opcionesMenuPrincipal.values()]:
         for clave, opcion in opcionesMenuPrincipal.items():
             if opcion["Descripcion"] == seleccion:
                 opcion["Funcion"](opcion["Menu"], opcion["Descripcion"])
                 break
-    #si la opcion es 1 mas que la lista 
+    # si la opcion es 1 mas que la lista
     elif seleccion == str(len(opcionesMenuPrincipal) + 1):
         print("Finalizando programa")
-        #finaliza el programa
+        # finaliza el programa
         break
     else:
         print("Opcion invalida. Por favor, selecciona nuevamente.")
-
