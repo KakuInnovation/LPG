@@ -34,45 +34,45 @@ class View:
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
         self.listaPartidosPoliticos = {
-            1: {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Numero": 1},
-            2: {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Numero": 2},
-            3: {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Numero": 3},
-            4: {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Numero": 4},
-            5: {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Numero": 5},
-            6: {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Numero": 6},
+            1: {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Lista": "1"},
+            2: {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Lista": "2"},
+            3: {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Lista": "3"},
+            4: {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Lista": "4"},
+            5: {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Lista": "5"},
+            6: {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Lista": "6"},
         }
 
 # Diccionario de provincias la clave es un numero autoincremental y su nombre
         self.listaProvincias = {
-            1: {"Nombre": "CABA", "Numero": 1},
-            2: {"Nombre": "BUENOS AIRES", "Numero": 2},
-            3: {"Nombre": "CATAMARCA", "Numero": 3},
-            4: {"Nombre": "CHACO", "Numero": 4},
-            5: {"Nombre": "CHUBUT", "Numero": 5},
-            6: {"Nombre": "CORDOBA", "Numero": 6},
-            7: {"Nombre": "CORRIENTES", "Numero": 7},
-            8: {"Nombre": "ENTRE RIOS", "Numero": 8},
-            9: {"Nombre": "FORMOSA", "Numero": 9},
-            10: {"Nombre": "JUJUY", "Numero": 10},
-            11: {"Nombre": "LA PAMPA", "Numero": 11},
-            12: {"Nombre": "LA RIOJA", "Numero": 12},
-            13: {"Nombre": "MENDOZA", "Numero": 13},
-            14: {"Nombre": "MISIONES", "Numero": 14},
-            15: {"Nombre": "NEUQUEN", "Numero": 15},
-            16: {"Nombre": "RIO NEGRO", "Numero": 16},
-            17: {"Nombre": "SALTA", "Numero": 17},
-            18: {"Nombre": "SAN JUAN", "Numero": 18},
-            19: {"Nombre": "SAN LUIS", "Numero": 19},
-            20: {"Nombre": "SANTA CRUZ", "Numero": 20},
-            21: {"Nombre": "SANTA FE", "Numero": 21},
-            22: {"Nombre": "SANTIAGO DEL ESTERO", "Numero": 22},
-            23: {"Nombre": "TIERRA DEL FUEGO", "Numero": 23},
-            24: {"Nombre": "TUCUMAN", "Numero": 24}
+            1: {"Nombre": "CABA", "Codigo": "1"},
+            2: {"Nombre": "BUENOS AIRES", "Codigo": "2"},
+            3: {"Nombre": "CATAMARCA", "Codigo": "3"},
+            4: {"Nombre": "CHACO", "Codigo": "4"},
+            5: {"Nombre": "CHUBUT", "Codigo": "5"},
+            6: {"Nombre": "CORDOBA", "Codigo": "6"},
+            7: {"Nombre": "CORRIENTES", "Codigo": "7"},
+            8: {"Nombre": "ENTRE RIOS", "Codigo": "8"},
+            9: {"Nombre": "FORMOSA", "Codigo": "9"},
+            10: {"Nombre": "JUJUY", "Codigo": "10"},
+            11: {"Nombre": "LA PAMPA", "Codigo": "11"},
+            12: {"Nombre": "LA RIOJA", "Codigo": "12"},
+            13: {"Nombre": "MENDOZA", "Codigo": "13"},
+            14: {"Nombre": "MISIONES", "Codigo": "14"},
+            15: {"Nombre": "NEUQUEN", "Codigo": "15"},
+            16: {"Nombre": "RIO NEGRO", "Codigo": "16"},
+            17: {"Nombre": "SALTA", "Codigo": "17"},
+            18: {"Nombre": "SAN JUAN", "Codigo": "18"},
+            19: {"Nombre": "SAN LUIS", "Codigo": "19"},
+            20: {"Nombre": "SANTA CRUZ", "Codigo": "20"},
+            21: {"Nombre": "SANTA FE", "Codigo": "21"},
+            22: {"Nombre": "SANTIAGO DEL ESTERO", "Codigo": "22"},
+            23: {"Nombre": "TIERRA DEL FUEGO", "Codigo": "23"},
+            24: {"Nombre": "TUCUMAN", "Codigo": "24"}
         }
 
         self.datosDeCadaLista = {
-            "Partidos Politicos": {"ElementosSolicitar": ["Nombre", "Abreviatura", "Numero"], "Lista": self.listaPartidosPoliticos},
-            "Regiones Geograficas": {"ElementosSolicitar": ["Nombre", "Numero"], "Lista": self.listaProvincias}
+            "Partidos Politicos": {"ElementosSolicitar": ["Nombre", "Abreviatura", "Lista"], "Lista": self.listaPartidosPoliticos},
+            "Regiones Geograficas": {"ElementosSolicitar": ["Nombre", "Codigo"], "Lista": self.listaProvincias}
         }
 
     def main(self):
@@ -143,8 +143,8 @@ class View:
 
     # Funcion para confirmacion de datos
     def EjecutarConfirmacion(self, si="Confirmar", no="Cancelar"):
-        retorno = 0
-        while retorno == 0:
+        retorno = None
+        while retorno == None:
             print("1)", si)
             print("0)", no)
             seleccion = input("Por favor, selecciona una opcion => ")
@@ -163,13 +163,17 @@ class View:
 
     # Funcion Descargar Partidos politicos
     def DecargarPartidosPoliticos(self):
-        print("Descargado Partidos Políticos...")
+        print("Descargado Partidos Politicos...")
+        self.listaATrabajar = self.datosDeCadaLista["Partidos Politicos"]["Lista"]
         self.controller.decargarPartidosPoliticos(self.listaATrabajar)
+        self.prametrizacionVer()
 
     # Funcion Descargar Regiones Geograficas
     def DecargarRegionesGeograficas(self):
-        print("Descargado Regiones Geográficas...")
+        print("Descargado Regiones Geograficas...")
+        self.listaATrabajar = self.datosDeCadaLista["Regiones Geograficas"]["Lista"]
         self.controller.decargarRegionesGeograficas(self.listaATrabajar)
+        self.prametrizacionVer()
 
     # Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
     def MensajeErrorValidacion(self, dato, campo, tipo):
@@ -231,18 +235,14 @@ class View:
                     dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = str(dato).upper()
                 dato = dato.upper()
-            elif campo == "Numero":
+            elif campo == "Lista":
                 while flag == False:
                     if dato == "" and tipo == "Modificar":
                         break
-                    elif str(dato).isdigit():
-                        dato = int(dato)
-                        if 0 < dato <= 999:
-                            if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Numero") == False:
-                                flag = True
-                            else:
-                                print("Este Numero ya pertence a un Partido:",
-                                      self.listaPartidosPoliticos[dato]["Nombre"])
+                    elif self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Lista") == False:
+                        flag = True
+                    else:
+                        print("Este Lista ya pertence a un Partido")
                     # no cambiar a elif
                     if flag == False:
                         dato = self.MensajeErrorValidacion(dato, campo, tipo)
@@ -266,6 +266,15 @@ class View:
                         else:
                             dato = input(
                                 "Provincia ya Existente, Ingrese el " + campo + " nuevamente => ")
+            elif campo == "Codigo":
+                while flag == False:
+                    if dato == "" and tipo == "Modificar":
+                        break
+                    if self.VerificarRepetidos(self.listaProvincias, dato, claveElemento, "Codigo") == False:
+                        flag = True
+                    else:
+                        print("Este Codigo ya pertence a una Provincia")
+                        dato = self.MensajeErrorValidacion(dato, campo, tipo)
         return dato
 
     # Funcion que redirige a la funcion de alta espesifica

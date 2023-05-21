@@ -12,28 +12,30 @@ class Model:
         pass
 
     def writeRegionesGeograficas(self, info):
-        #print("RegionesGeograficas of Model")
-        f = open(self.filereg, 'w', encoding='UTF-8')
+        if info != None:
+            #print("RegionesGeograficas of Model")
+            f = open(self.filereg, 'w', encoding='UTF-8')
 
-        try:
-            for reg in info.values():
-                registro = ""
-                registro = str(reg["Numero"]) + ";" + reg["Nombre"] + "\n"
-                str(registro)
-                f.write(registro)
-        finally:
-            f.close()
+            try:
+                for reg in info.values():
+                    registro = ""
+                    registro = str(reg["Codigo"]) + ";" + reg["Nombre"] + "\n"
+                    str(registro)
+                    f.write(registro)
+            finally:
+                f.close()
 
     def writePartidosPoliticos(self, info):
-        #print("Partidos Políticos of Model")
-        f = open(self.filepartpol, 'w', encoding='UTF-8')
+        if info != None:
+            #print("Partidos Políticos of Model")
+            f = open(self.filepartpol, 'w', encoding='UTF-8')
 
-        try:
-            for reg in info.values():
-                registro = ""
-                registro = str(reg["Numero"]) + ";" + \
-                    reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
-                str(registro)
-                f.write(registro)
-        finally:
-            f.close()
+            try:
+                for reg in info.values():
+                    registro = ""
+                    registro = str(reg["Lista"]) + ";" + \
+                        reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
+                    str(registro)
+                    f.write(registro)
+            finally:
+                f.close()
