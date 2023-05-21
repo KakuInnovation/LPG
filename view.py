@@ -177,7 +177,7 @@ class View:
                 if str(clave) == str(claveElemento):
                     return True
             else:
-                if opcion[campo] == dato:
+                if str(opcion[campo]) == str(dato).upper():
                     if str(clave) == claveElemento or opcion["Nombre"] == claveElemento:
                         return False
                     else:
@@ -193,7 +193,7 @@ class View:
                 while dato == "" or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Nombre"):
                     if dato == "" and tipo == "Modificar":
                         break
-                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, "Nombre") == True:
+                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento,"Nombre") == True:
                         print("Este Nombre ya pertence a un Partido")
                     dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = str(dato).upper()
@@ -211,10 +211,13 @@ class View:
                 while flag == False:
                     if dato == "" and tipo == "Modificar":
                         break
-                    elif self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Lista") == False:
-                        flag = True
-                    else:
-                        print("Este Lista ya pertence a un Partido")
+                    elif str(dato).isdigit():
+                        dato = int(dato)
+                        if 0 < dato <= 999:
+                            if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Lista") == False:
+                                flag = True
+                            else:
+                                print("Este Numero ya pertence a un Partido")
                     # no cambiar a elif
                     if flag == False:
                         dato = self.MensajeErrorValidacion(dato, campo, tipo)
@@ -264,7 +267,10 @@ class View:
             else:
                 elemento[campo] = self.ValidacionesCampo(dato, campo, "Alta")
 
-        clave = max(self.listaATrabajar.keys()) + 1
+        if self.listaATrabajar == {}:
+            clave = 1
+        else:
+            clave = max(self.listaATrabajar.keys()) + 1
         textoEscribir = ""
         totalElementos = len(elemento)
         indiceActual = 0
