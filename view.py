@@ -1,7 +1,7 @@
 class View:
     # Constructor - Inicialización del Objeto instanciado
     def __init__(self, controller):
-        print("init View")
+        #print("init View")
         self.controller = controller
         self.salirAlMenuPrincipal = ""
         self.deDondeVengo = ""
@@ -76,7 +76,7 @@ class View:
         }
 
     def main(self):
-        print("main of View!\n")
+        #print("main of View!\n")
 
         while True:
             # definimos esta variable como global para que pueda ser consumida por cualquier Funcion

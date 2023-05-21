@@ -2,16 +2,17 @@
 class Model:
     # Constructor - Inicialización del Objeto instanciado
     def __init__(self, controller):
-        print("init Model")
+        #print("init Model")
         self.controller = controller
         self.filereg = 'db/regiones.csv'
         self.filepartpol = 'db/partidos.csv'
 
     def main(self):
-        print("main of Model")
+        #print("main of Model")
+        pass
 
     def writeRegionesGeograficas(self, info):
-        print("RegionesGeograficas of Model")
+        #print("RegionesGeograficas of Model")
         f = open(self.filereg, 'w', encoding='UTF-8')
 
         try:
@@ -24,7 +25,7 @@ class Model:
             f.close()
 
     def writePartidosPoliticos(self, info):
-        print("Partidos Políticos of Model")
+        #print("Partidos Políticos of Model")
         f = open(self.filepartpol, 'w', encoding='UTF-8')
 
         try:
