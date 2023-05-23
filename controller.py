@@ -7,22 +7,37 @@ from view import View
 class Controller:
     # Constructor - Inicialización del Objeto instanciado
     def __init__(self):
-        # print("init Controller")
         self.model = Model(self)
         self.view = View(self)
 
     def main(self):
-        # print("main Controller")
         self.view.main()
         self.model.main()
 
     def decargarPartidosPoliticos(self, info):
-        # print("decargarPartidosPoliticos Controller")
         self.model.writePartidosPoliticos(info)
 
     def decargarRegionesGeograficas(self, info):
-        # print("decargarRegionesGeograficas Controller")
         self.model.writeRegionesGeograficas(info)
+
+    def decargarArchivoVotacion(self, info):
+        self.model.writeArchivoVotacion(info)
+
+    def readPartidosPoliticos(self):
+        self.model.readPartidosPoliticos()
+
+    def readegionesGeograficas(self):
+        self.model.readPartidosPoliticos()
+
+    def generarVotacion(self, repeticion):
+        pass
+
+    def validacionDNI(self, dni):
+        # TRUE menor a 4 votos
+        # FALSE tiene 4 votos
+        return True
+
+        pass
 
 
 # INICIO DE LA APP
