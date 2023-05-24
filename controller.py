@@ -38,9 +38,9 @@ class Controller:
             if element["Dni"] == dni:
                 cantidad += 1
         if cantidad <= 4:
-            return False
-        else:
             return True
+        else:
+            return False
 
     def ValidacionVotoProvinciaExistente(self, dni):
         for element in self.view.Votos:

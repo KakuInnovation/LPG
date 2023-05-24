@@ -35,7 +35,7 @@ class View:
         self.opcionesMenuVotacionAlta={
             "1":{"Descripcion": "Automatica", "Funcion":self.temporal},
             "2":{"Descripcion": "SemiAutomatica", "Funcion":self.temporal},
-            "3":{"Descripcion": "Manual", "Funcion":self.temporal}
+            "3":{"Descripcion": "Manual", "Funcion":self.VotacionAltaManual}
         }
 
         self.opcionesMenuVotacion = {
@@ -113,14 +113,19 @@ class View:
         self.MensajeVolverAtras()
         element={}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
-
-        #validacion Dato
+        
+        while str(dato).isdigit() and 0<int(dato)<=99999999 or self.Controller.ValidacionDNI(dato):
+            if self.Controller.ValidacionDNI(dato):
+                print("Este Votante ya ha realizado todas ha relizado todos sus votos.")
+            else:
+                print("DNI Invalido")
+            dato = input("Por Favor, Ingrese el DNI del Votante => ")
 
         element["new"] = {"Dni":dato}
 
         provincia = self.controller.ValidacionVotoProvinciaExistente()
         if provincia != None:
-            print("Pronvincia Elegida")
+            print("Provincia Elegida")
         else:
             provincia = input("Por Favor, Ingrese la Provincia del Votante => ")
 
