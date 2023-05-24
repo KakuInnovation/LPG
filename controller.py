@@ -39,6 +39,13 @@ class Controller:
 
         pass
 
+    def ValidacionVotoProvinciaExistente(self, dni):
+        for element in self.Votos:
+            if element["Dni"] == dni:
+                return element["Provincia"]
+        return None
+
+
 
 # INICIO DE LA APP
 if __name__ == '__main__':

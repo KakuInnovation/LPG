@@ -112,14 +112,19 @@ class View:
         print("Alta Votacion Manual")
         self.MensajeVolverAtras()
         element={}
-        dato = input("Por Favor Ingrese, el DNI del Votante => ")
+        dato = input("Por Favor, Ingrese el DNI del Votante => ")
         #validacion Dato
 
         element["new"] = {"Dni":dato}
 
-        if self.controller.
+        provincia = self.controller.ValidacionVotoProvinciaExistente()
+        if provincia != None:
+            print("Pronvincia Elegida")
+        else:
+            provincia = input("Por Favor,")
+
         #solicitamos 
-        dato = input("Por Favor Ingrese, el DNI del Votante => ")
+        dato = input("Por Favor, Ingrese la Provincia del Votante => ")
 
 
 
