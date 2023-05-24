@@ -305,7 +305,7 @@ class View:
         self.MensajeVolverAtras()
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato == "Volver Atras":
+            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
                 return
             else:
                 elemento[campo] = self.ValidacionesCampo(dato, campo, "Alta")
@@ -336,7 +336,7 @@ class View:
         encontrado = None
         mostrarMensajeVolverAtras = 0
         while encontrado == None:
-            if dato == "Volver Atras":
+            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
                 return
             else:
                 for clave, opciones in listaATrabajar.items():
@@ -361,7 +361,7 @@ class View:
         print("Baja", self.deDondeVengo)
         self.ParametrizacionVer()
         dato = input("Ingrese el elemento a Eliminar => ")
-        if dato == "Volver Atras":
+        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
             return
         self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
         dato = self.BuscarElementoLista(dato, self.listaATrabajar)
@@ -395,7 +395,7 @@ class View:
         self.MensajeVolverAtras()
 
         dato = input("Ingrese el campo a Modificar => ")
-        if dato == "Volver Atras":
+        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
             return
 
         self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
@@ -406,13 +406,13 @@ class View:
 
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato == "Volver Atras":
+            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
                 return
             else:
                 elemento[campo] = self.ValidacionesCampo(
                     dato, campo, "Modificar", encontrado)
                 
-        if dato == "Volver Atras":
+        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
             return
         
         clave = max(self.listaATrabajar.keys()) + 1
@@ -502,7 +502,7 @@ class View:
                         salir = False
 
             # si la opcion es 1 mas que la lista
-            elif seleccion == str(len(menu) + 1) or seleccion == "Volver":
+            elif seleccion == str(len(menu) + 1) or seleccion == "Volver".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
                 salir = True
                 # finaliza el programa
                 break
