@@ -15,6 +15,12 @@ class View:
             "4": {"Descripcion": "Ver", "Funcion": self.ParametrizacionVer}
         }
 
+        self.opcionesCargos = {
+            "1": {"Descripcion": "Presidente y Vicepresidente"},
+            "2": {"Descripcion": "Diputado"},
+            "3": {"Descripcion": "Senador"},
+            "4": {"Descripcion": "Gobernador y Vicegobernador"}
+        }
 # Diccionario de opciones y Funciones asociadas Menu Parametizacion
         self.opcionesMenuParametrizacion = {
             "1": {"Descripcion": "Partidos Politicos", "Funcion": self.MenuGenerico, "Menu": self.opcionesABM},
@@ -113,8 +119,11 @@ class View:
         self.MensajeVolverAtras()
         element={}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
-        
+        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+                return
         while str(dato).isdigit() and 0<int(dato)<=99999999 or self.Controller.ValidacionDNI(dato):
+            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+                return
             if self.Controller.ValidacionDNI(dato):
                 print("Este Votante ya ha realizado todas ha relizado todos sus votos.")
             else:
@@ -123,13 +132,27 @@ class View:
 
         element["new"] = {"Dni":dato}
 
-        provincia = self.controller.ValidacionVotoProvinciaExistente()
-        if provincia != None:
+        datoVotos = self.controller.ValidacionVotosPrevios()
+        if datoVotos != {}:
             print("Provincia Elegida")
         else:
-            provincia = input("Por Favor, Ingrese la Provincia del Votante => ")
-
-        #solicitamos 
+            dato = input("Por Favor, Ingrese la Provincia del Votante => ")
+            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+                return
+        
+        print("Cargos Disponibles")
+        allOptions = True
+        for cargo in self.opcionesCargos:
+            find = False
+            for voto in datoVotos.items():
+                if cargo["Key"] == voto["Cargo"]:
+                    find = True
+                    allOptions = False
+                    break
+            if find == False:
+                print(str(cargo["Key"]) + ")", cargo["Descripcion"])
+        if allOptions == False:
+            print("Si no ve alguna Opcion significa que Votante ya ha realizado un voto para ese cargo")
         dato = input("Por Favor,  => ")
 
 

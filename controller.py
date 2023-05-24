@@ -42,12 +42,12 @@ class Controller:
         else:
             return False
 
-    def ValidacionVotoProvinciaExistente(self, dni):
+    def ValidacionVotosPrevios(self, dni):
+        elements = {}
         for element in self.view.Votos:
             if element["Dni"] == dni:
-                return element["Provincia"]
-        return None
-
+                elements[element["Key"]] = element["Value"]
+        return elements
 
 # INICIO DE LA APP
 if __name__ == '__main__':
