@@ -151,7 +151,7 @@ class View:
     def MensajeErrorValidacion(self, dato, campo, tipo):
         if tipo == "Modificar":
             print(
-                campo, "Invalido, Recuerde si quiere Mantener la Informacion Dejelo el Campo en Blanco")
+                campo, "Invalido, Recuerde si quiere Mantener la Informacion deje el Campo en Blanco")
             dato = input("Por Favor, Ingrese el " + campo + " nuevamente =>")
         else:
             dato = input(campo+" Invalido, Ingrese el " +
@@ -164,7 +164,7 @@ class View:
     def MensajeVolverAtras(self, cantidad=0):
         if cantidad == 0:
             print(
-                "Ingrese 'Volver Atras' en cualquier momenento si desea Regresar al Menu anterior.")
+                "Ingrese 'Volver Atras' en cualquier momento si desea Regresar al Menu anterior.")
         elif cantidad == 3:
             print("Recuerde que Ingrando 'Volver Atras' Regresara al Menu anterior.")
         cantidad += 1
@@ -177,7 +177,7 @@ class View:
                 if str(clave) == str(claveElemento):
                     return True
             else:
-                if opcion[campo] == dato:
+                if str(opcion[campo]) == str(dato).upper():
                     if str(clave) == claveElemento or opcion["Nombre"] == claveElemento:
                         return False
                     else:
@@ -193,7 +193,7 @@ class View:
                 while dato == "" or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Nombre"):
                     if dato == "" and tipo == "Modificar":
                         break
-                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, "Nombre") == True:
+                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento,"Nombre") == True:
                         print("Este Nombre ya pertence a un Partido")
                     dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = str(dato).upper()
@@ -203,7 +203,7 @@ class View:
                     if dato == "" and tipo == "Modificar":
                         break
                     if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Abreviatura") == True:
-                        print("Este Abreviatura ya pertence a un Partido")
+                        print("Esta Abreviatura ya pertence a un Partido")
                     dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = str(dato).upper()
                 dato = dato.upper()
@@ -211,10 +211,13 @@ class View:
                 while flag == False:
                     if dato == "" and tipo == "Modificar":
                         break
-                    elif self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Lista") == False:
-                        flag = True
-                    else:
-                        print("Este Lista ya pertence a un Partido")
+                    elif str(dato).isdigit():
+                        dato = int(dato)
+                        if 0 < dato <= 999:
+                            if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Lista") == False:
+                                flag = True
+                            else:
+                                print("Este Numero ya pertence a un Partido")
                     # no cambiar a elif
                     if flag == False:
                         dato = self.MensajeErrorValidacion(dato, campo, tipo)
@@ -232,7 +235,7 @@ class View:
                     if flag == True:
                         if tipo == "Modificar":
                             print(
-                                "Provincia ya Existente, Recuerde si quiere Mantener la Informacion Dejelo el Campo en Blanco")
+                                "Provincia ya Existente, Recuerde si quiere Mantener la Informacion deje el Campo en Blanco")
                             dato = input("Por Favor, Ingrese el " +
                                          campo + " nuevamente => ")
                         else:
@@ -264,7 +267,10 @@ class View:
             else:
                 elemento[campo] = self.ValidacionesCampo(dato, campo, "Alta")
 
-        clave = max(self.listaATrabajar.keys()) + 1
+        if self.listaATrabajar == {}:
+            clave = 1
+        else:
+            clave = max(self.listaATrabajar.keys()) + 1
         textoEscribir = ""
         totalElementos = len(elemento)
         indiceActual = 0
@@ -362,7 +368,10 @@ class View:
             else:
                 elemento[campo] = self.ValidacionesCampo(
                     dato, campo, "Modificar", encontrado)
-
+                
+        if dato == "Volver Atras":
+            return
+        
         clave = max(self.listaATrabajar.keys()) + 1
 
         textoEscribir = ""
