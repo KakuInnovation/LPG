@@ -27,10 +27,29 @@ class View:
             "2": {"Descripcion": "Regiones Geograficas", "Funcion": self.DecargarRegionesGeograficas}
         }
 
+        self.opcionesMenuDescargaArchivos = {
+            "1": {"Descripcion": "Partidos Politicos", "Funcion": self.DecargarPartidosPoliticos},
+            "2": {"Descripcion": "Regiones Geograficas", "Funcion": self.DecargarRegionesGeograficas}
+        }
+
+        self.opcionesMenuVotacionAlta={
+            "1":{"Descripcion": "Automatica", "Funcion":self.temporal},
+            "2":{"Descripcion": "SemiAutomatica", "Funcion":self.temporal},
+            "3":{"Descripcion": "Manual", "Funcion":self.temporal}
+        }
+
+        self.opcionesMenuVotacion = {
+            "1": {"Descripcion": "Alta Nuevos Votos", "Funcion": self.MenuGenerico, "Menu":self.opcionesMenuVotacionAlta},
+            "2": {"Descripcion": "Ver Porcentajes", "Funcion": self.temporal}
+        }
+
         self.opcionesMenuPrincipal = {
             "1": {"Descripcion": "Parametrizacion", "Funcion": self.MenuGenerico, "Menu": self.opcionesMenuParametrizacion},
-            "2": {"Descripcion": "Descarga de Archivos", "Funcion": self.MenuGenerico, "Menu": self.opcionesMenuDescargaArchivos}
+            "2": {"Descripcion": "Descarga de Archivos", "Funcion": self.MenuGenerico, "Menu": self.opcionesMenuDescargaArchivos},
+            "3": {"Descripcion": "Votacion", "Funcion": self.MenuGenerico, "Menu": self.opcionesMenuVotacion}
         }
+
+        self.Votos={}
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
         self.listaPartidosPoliticos = {
@@ -44,6 +63,8 @@ class View:
             "Partidos Politicos": {"ElementosSolicitar": ["Nombre", "Abreviatura", "Lista"], "Lista": self.listaPartidosPoliticos},
             "Regiones Geograficas": {"ElementosSolicitar": ["Nombre", "Codigo"], "Lista": self.listaProvincias}
         }
+    def temporal():
+        print("a")
 
     def main(self):
         #print("main of View!\n")
@@ -85,6 +106,22 @@ class View:
                 break
             else:
                 print("Opcion invalida. Por favor, selecciona nuevamente.")
+
+# funcion para alta de datos Manual
+    def VotacionAltaManual(self):
+        print("Alta Votacion Manual")
+        self.MensajeVolverAtras()
+        element={}
+        dato = input("Por Favor Ingrese, el DNI del Votante => ")
+        #validacion Dato
+
+        element["new"] = {"Dni":dato}
+
+        if self.controller.
+        #solicitamos 
+        dato = input("Por Favor Ingrese, el DNI del Votante => ")
+
+
 
 # Mostrar Opciones Menu Principal
     def MostrarOpcionesMenuPrincipal(self):
