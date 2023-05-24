@@ -113,6 +113,7 @@ class View:
         self.MensajeVolverAtras()
         element={}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
+
         #validacion Dato
 
         element["new"] = {"Dni":dato}
@@ -121,10 +122,10 @@ class View:
         if provincia != None:
             print("Pronvincia Elegida")
         else:
-            provincia = input("Por Favor,")
+            provincia = input("Por Favor, Ingrese la Provincia del Votante => ")
 
         #solicitamos 
-        dato = input("Por Favor, Ingrese la Provincia del Votante => ")
+        dato = input("Por Favor,  => ")
 
 
 
