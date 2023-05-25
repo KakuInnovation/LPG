@@ -1,7 +1,8 @@
+
 class View:
     # Constructor - Inicialización del Objeto instanciado
     def __init__(self, controller):
-        #print("init View")
+        # print("init View")
         self.controller = controller
         self.salirAlMenuPrincipal = ""
         self.deDondeVengo = ""
@@ -38,14 +39,14 @@ class View:
             "2": {"Descripcion": "Regiones Geograficas", "Funcion": self.DecargarRegionesGeograficas}
         }
 
-        self.opcionesMenuVotacionAlta={
-            "1":{"Descripcion": "Automatica", "Funcion":self.temporal},
-            "2":{"Descripcion": "SemiAutomatica", "Funcion":self.temporal},
-            "3":{"Descripcion": "Manual", "Funcion":self.VotacionAltaManual}
+        self.opcionesMenuVotacionAlta = {
+            "1": {"Descripcion": "Automatica", "Funcion": self.temporal},
+            "2": {"Descripcion": "SemiAutomatica", "Funcion": self.temporal},
+            "3": {"Descripcion": "Manual", "Funcion": self.VotacionAltaManual}
         }
 
         self.opcionesMenuVotacion = {
-            "1": {"Descripcion": "Alta Nuevos Votos", "Funcion": self.MenuGenerico, "Menu":self.opcionesMenuVotacionAlta},
+            "1": {"Descripcion": "Alta Nuevos Votos", "Funcion": self.MenuGenerico, "Menu": self.opcionesMenuVotacionAlta},
             "2": {"Descripcion": "Ver Porcentajes", "Funcion": self.temporal}
         }
 
@@ -55,7 +56,7 @@ class View:
             "3": {"Descripcion": "Votacion", "Funcion": self.MenuGenerico, "Menu": self.opcionesMenuVotacion}
         }
 
-        self.Votos={}
+        self.Votos = {}
 
 # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
         self.listaPartidosPoliticos = {
@@ -69,11 +70,12 @@ class View:
             "Partidos Politicos": {"ElementosSolicitar": ["Nombre", "Abreviatura", "Lista"], "Lista": self.listaPartidosPoliticos},
             "Regiones Geograficas": {"ElementosSolicitar": ["Nombre", "Codigo"], "Lista": self.listaProvincias}
         }
+
     def temporal():
         print("a")
 
     def main(self):
-        #print("main of View!\n")
+        # print("main of View!\n")
 
         while True:
             # definimos esta variable como global para que pueda ser consumida por cualquier Funcion
@@ -117,29 +119,29 @@ class View:
     def VotacionAltaManual(self):
         print("Alta Votacion Manual")
         self.MensajeVolverAtras()
-        element={}
+        element = {}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
-        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+        if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
+            return
+        while str(dato).isdigit() and 0 < int(dato) <= 99999999 or self.controller.ValidacionDNI(dato):
+            if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
                 return
-        while str(dato).isdigit() and 0<int(dato)<=99999999 or self.Controller.ValidacionDNI(dato):
-            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
-                return
-            if self.Controller.ValidacionDNI(dato):
+            if self.controller.ValidacionDNI(dato):
                 print("Este Votante ya ha realizado todas ha relizado todos sus votos.")
             else:
                 print("DNI Invalido")
             dato = input("Por Favor, Ingrese el DNI del Votante => ")
 
-        element["new"] = {"Dni":dato}
+        element["new"] = {"Dni": dato}
 
         datoVotos = self.controller.ValidacionVotosPrevios()
         if datoVotos != {}:
             print("Provincia Elegida")
         else:
             dato = input("Por Favor, Ingrese la Provincia del Votante => ")
-            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+            if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
                 return
-        
+
         print("Cargos Disponibles")
         allOptions = True
         for cargo in self.opcionesCargos:
@@ -152,12 +154,14 @@ class View:
             if find == False:
                 print(str(cargo["Key"]) + ")", cargo["Descripcion"])
         if allOptions == False:
-            print("Si no ve alguna Opcion significa que Votante ya ha realizado un voto para ese cargo")
+            print(
+                "Si no ve alguna Opcion significa que Votante ya ha realizado un voto para ese cargo")
         dato = input("Por Favor,  => ")
 
 
-
 # Mostrar Opciones Menu Principal
+
+
     def MostrarOpcionesMenuPrincipal(self):
         for opcion, Funcion in self.opcionesMenuPrincipal.items():
             print(f"{opcion}) {Funcion['Descripcion']}")
@@ -237,7 +241,7 @@ class View:
             print(
                 "Ingrese 'Volver Atras' en cualquier momento si desea Regresar al Menu anterior.")
         elif cantidad == 3:
-            print("Recuerde que Ingrando 'Volver Atras' Regresara al Menu anterior.")
+            print("Recuerde que Ingresando 'Volver Atras' Regresara al Menu anterior.")
         cantidad += 1
         return cantidad
 
@@ -264,7 +268,7 @@ class View:
                 while dato == "" or self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Nombre"):
                     if dato == "" and tipo == "Modificar":
                         break
-                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento,"Nombre") == True:
+                    if self.VerificarRepetidos(self.listaPartidosPoliticos, dato, claveElemento, "Nombre") == True:
                         print("Este Nombre ya pertence a un Partido")
                     dato = self.MensajeErrorValidacion(dato, campo, tipo)
                     dato = str(dato).upper()
@@ -333,7 +337,7 @@ class View:
         self.MensajeVolverAtras()
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+            if dato == "Volver Atras" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
                 return
             else:
                 elemento[campo] = self.ValidacionesCampo(dato, campo, "Alta")
@@ -364,7 +368,7 @@ class View:
         encontrado = None
         mostrarMensajeVolverAtras = 0
         while encontrado == None:
-            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+            if dato == "Volver Atras" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS": 
                 return
             else:
                 for clave, opciones in listaATrabajar.items():
@@ -389,7 +393,7 @@ class View:
         print("Baja", self.deDondeVengo)
         self.ParametrizacionVer()
         dato = input("Ingrese el elemento a Eliminar => ")
-        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+        if dato == "Volver Atras" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
             return
         self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
         dato = self.BuscarElementoLista(dato, self.listaATrabajar)
@@ -423,7 +427,7 @@ class View:
         self.MensajeVolverAtras()
 
         dato = input("Ingrese el campo a Modificar => ")
-        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+        if dato == "Volver Atras" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
             return
 
         self.listaATrabajar = self.datosDeCadaLista[self.deDondeVengo]["Lista"]
@@ -434,15 +438,15 @@ class View:
 
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+            if dato == "Volver Atras" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
                 return
             else:
                 elemento[campo] = self.ValidacionesCampo(
                     dato, campo, "Modificar", encontrado)
-                
-        if dato == "Volver Atras".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+
+        if dato == "Volver Atras" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
             return
-        
+
         clave = max(self.listaATrabajar.keys()) + 1
 
         textoEscribir = ""
@@ -453,7 +457,7 @@ class View:
             textoEscribir += str(propiedad) + ": " + str(valor)
             if indiceActual != totalElementos:
                 textoEscribir += " / "
-        print("Nuevo Elemetno)", textoEscribir)
+        print("Nuevo Elemento)", textoEscribir)
 
         confirmacion = self.EjecutarConfirmacion()
 
@@ -530,7 +534,7 @@ class View:
                         salir = False
 
             # si la opcion es 1 mas que la lista
-            elif seleccion == str(len(menu) + 1) or seleccion == "Volver".lower() or "Volver Atras".upper() or "Volver Atras".capitalize():
+            elif seleccion == str(len(menu) + 1) or seleccion == "Volver":
                 salir = True
                 # finaliza el programa
                 break
