@@ -3,23 +3,18 @@ filereg = 'db/regiones.csv'
 filepartpol = 'db/partidos.csv'
 filevotacion = 'db/votacion.csv'
 
-
-def temporal():
-    print("a")
-
-
 def main():
-    # funcion para alta de datos Manual
+    # funcion para alta de votos Manual
     def VotacionAltaManual():
         global deDondeVengo
         print("Alta Votacion Manual")
         MensajeVolverAtras()
         element = {}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
             return
         while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             if ValidacionDNI(dato):
                 print("Este Votante ya ha realizado todas ha relizado todos sus votos.")
@@ -41,7 +36,7 @@ def main():
             if dato.lower() in {"volver", "volver atras"}:
                 return
             while not (dato in listaProvincias.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]):
-                if dato.lower() in {"volver", "volver atrás"}:
+                if dato.lower() in {"volver", "volver atras"}:
                     return
                 dato = input(
                     "Opcion Incorrecta, por Favor Seleccione un Provincia Valida =>")
@@ -65,7 +60,7 @@ def main():
         if dato.lower() in {"volver", "volver atras"}:
             return
         while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in opcionesCargos.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             dato = input("Opcion Incorrecta, por Favor Seleccione un cargo =>")
         element["Cargo"] = str(dato)
@@ -74,14 +69,14 @@ def main():
         ParametrizacionVer()
         deDondeVengo = "Alta Nuevos Votos"
         dato = input("Por Favor, Ingrese el Partido Politico del Votante => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
             return
         while not (dato in listaPartidosPoliticos.keys() or dato in [opcion["Nombre"] for opcion in listaPartidosPoliticos.values()]):
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             dato = input(
                 "Opcion Incorrecta, por Favor Seleccione un Partido Politico Valido =>")
-        element["Partido Politico"] = str(dato)
+        element["Partido"] = str(dato)
 
         if votos == {}:
             clave = 1
@@ -105,7 +100,7 @@ def main():
         else:
             print(deDondeVengo, "No Registrado")
 
-    # Mostrar Opciones Menu Principal
+    # funcion para alta de votos Automatica
     def VotacionAltaAutomatica():
         global deDondeVengo
         element = {}
@@ -123,13 +118,11 @@ def main():
             element["Provincia"] = str(dato)
 
         while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-            if dato.lower() in {"volver", "volver atrás"}:
-                return
             dato = random.choice(list(opcionesCargos.keys()))
         element["Cargo"] = str(dato)
 
         dato = random.choice(list(listaPartidosPoliticos.keys()))
-        element["Partido Politico"] = str(dato)
+        element["Partido"] = str(dato)
 
         if votos == {}:
             clave = 1
@@ -149,20 +142,35 @@ def main():
         votos[clave] = element
         print(deDondeVengo, "Registrado Existosamente")
 
+    def PorcentajeVotacion(esDescarga=False, provincia=1, cargo=1):
+        votosTotales = 0
+        elements = {}
+        for clave, partido in listaPartidosPoliticos.items():
+            element = {}
+            element["Partido"] = partido["Nombre"]
+            element["CantidadVotos"] = 0
+            elements[clave] = element
+
+        for clave, element in votos.items():
+            if str(element["Provincia"]) == str(provincia) and str(element["Cargo"]) == str(cargo):
+                for clave2, element2 in elements.items():
+                    if str(clave2) == str(element["Partido"]):
+                        element2["Cantidad Votos"] += 1
+                        break
+                votosTotales += 1
+
+        for clave, element in elements.items():
+            porcentaje = element["Cantidad Votos"] * 100 / votosTotales
+            element["Porcentaje"] = porcentaje
+            print(clave +")",element["Partido"] + ":" ,porcentaje,"%")
+        
+        if esDescarga == False:
+            input("Pulse Enter para Continuar ")
+        return
+
+    # Mostrar Opciones Menu Principal
     def MostrarOpcionesMenuPrincipal():
         for opcion, Funcion in opcionesMenuPrincipal.items():
-            print(f"{opcion}) {Funcion['Descripcion']}")
-        print(f"{len(opcionesMenuPrincipal) + 1}) Salir")
-
-    # Mostrar Opciones Menu Parametrizacion
-    def MostrarOpcionesMenuParametrizacion():
-        for opcion, Funcion in opcionesMenuParametrizacion.items():
-            print(f"{opcion}) {Funcion['Descripcion']}")
-        print(f"{len(opcionesMenuPrincipal) + 1}) Salir")
-
-    # Mostrar Opciones Menu DescargaArchivos
-    def MostrarOpcionesMenuDescargaArchivos():
-        for opcion, Funcion in opcionesMenuDescargaArchivos.items():
             print(f"{opcion}) {Funcion['Descripcion']}")
         print(f"{len(opcionesMenuPrincipal) + 1}) Salir")
 
@@ -198,6 +206,8 @@ def main():
         print("Descargado Partidos Politicos...")
         listaATrabajar = datosDeCadaLista["Partidos Politicos"]["Lista"]
         WritePartidosPoliticos(listaATrabajar)
+        global deDondeVengo
+        deDondeVengo = "Partidos Politicos"
         ParametrizacionVer()
 
     # Funcion Descargar Regiones Geograficas
@@ -205,6 +215,8 @@ def main():
         print("Descargado Regiones Geograficas...")
         listaATrabajar = datosDeCadaLista["Regiones Geograficas"]["Lista"]
         WriteRegionesGeograficas(listaATrabajar)
+        global deDondeVengo
+        deDondeVengo = "Regiones Geograficas"
         ParametrizacionVer()
 
     # Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
@@ -322,7 +334,7 @@ def main():
         MensajeVolverAtras()
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             else:
                 elemento[campo] = ValidacionesCampo(dato, campo, "Alta")
@@ -353,7 +365,7 @@ def main():
         encontrado = None
         mostrarMensajeVolverAtras = 0
         while encontrado == None:
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             else:
                 for clave, opciones in listaATrabajar.items():
@@ -378,7 +390,7 @@ def main():
         print("Baja", deDondeVengo)
         ParametrizacionVer()
         dato = input("Ingrese el elemento a Eliminar => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
                 return
         listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
         dato = BuscarElementoLista(dato, listaATrabajar)
@@ -412,7 +424,7 @@ def main():
         MensajeVolverAtras()
 
         dato = input("Ingrese el campo a Modificar => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
                 return
 
         listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
@@ -423,13 +435,13 @@ def main():
 
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             else:
                 elemento[campo] = ValidacionesCampo(
                     dato, campo, "Modificar", encontrado)
 
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
                 return
 
         clave = max(listaATrabajar.keys()) + 1
@@ -643,7 +655,7 @@ def main():
 
     opcionesMenuVotacion = {
         "1": {"Descripcion": "Alta Nuevos Votos", "Funcion": MenuGenerico, "Menu": opcionesMenuVotacionAlta},
-        "2": {"Descripcion": "Ver Porcentajes", "Funcion": temporal}
+        "2": {"Descripcion": "Ver Porcentajes", "Funcion": PorcentajeVotacion}
     }
 
     opcionesMenuPrincipal = {
