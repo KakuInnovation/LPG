@@ -26,6 +26,7 @@ UADE Copa Algoritmia 2023
         - Se realizan los calculos correspondientes para obtener el porcentaje de votos de los respectivos partidos politicos y su print y comparacion con los otros partido politicos
         - Se integro la funcionalidad de carga automatica de votos con su respectiva validacion que permite al usuario ingresar N votos con un rango entre 0 y 999.999.999
         - Se agregaron validaciones y modificaciones a los inputs que permiten al usuario flexibilidad a la hora de manejarse dentro del programa y menues
+        - El usuario tambien puede subir su propio voto y tambien puede descargar tanto los votos subidos por el usuario como los creados por el programa
             - Clave: es un numero de nuestra opcion
             - Valores:
                 - descripcion: valor que va a ser el titulo de nuestra opcion y tambien puede ser elegida como opcion
