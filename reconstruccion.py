@@ -1,23 +1,23 @@
 filereg = 'db/regiones.csv'
 filepartpol = 'db/partidos.csv'
 filevotacion = 'db/votacion.csv'
+import random
 
 def temporal():
     print("a")
 
 def main():
-    salirAlMenuPrincipal = ""
-    deDondeVengo = ""
     # funcion para alta de datos Manual
     def VotacionAltaManual():
+        global deDondeVengo
         print("Alta Votacion Manual")
         MensajeVolverAtras()
         element = {}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
-        if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
+        if dato.lower() in {"volver", "volver atrás"}:
             return
-        while str(dato).isdigit() and 0 < int(dato) <= 99999999 or ValidacionDNI(dato):
-            if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
+        while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
+            if dato.lower() in {"volver", "volver atrás"}:
                 return
             if ValidacionDNI(dato):
                 print("Este Votante ya ha realizado todas ha relizado todos sus votos.")
@@ -25,35 +25,125 @@ def main():
                 print("DNI Invalido")
             dato = input("Por Favor, Ingrese el DNI del Votante => ")
 
-        element["new"] = {"Dni": dato}
+        element["Dni"] = str(dato)
 
-        datoVotos = ValidacionVotosPrevios()
+        datoVotos = ValidacionVotosPrevios(dato)
         if datoVotos != {}:
             print("Provincia Elegida")
+            element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
         else:
+            deDondeVengo = "Regiones Geograficas"
+            ParametrizacionVer()
+            deDondeVengo = "Alta Nuevos Votos"
             dato = input("Por Favor, Ingrese la Provincia del Votante => ")
-            if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
+            if dato.lower() in {"volver", "volver atras"}:
                 return
+            while not (dato in listaProvincias.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]):
+                if dato == "Volver" or dato == "volver atras" or dato == "VOLVER ATRAS" or dato == "volveratras" or dato == "VOLVERATRAS":
+                    return
+                dato = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida =>")
+            element["Provincia"] = str(dato)     
 
-        print("Cargos Disponibles")
+        print("Cargos Disponibles:")
         allOptions = True
         for cargo in opcionesCargos:
             find = False
             for voto in datoVotos.items():
-                if cargo["Key"] == voto["Cargo"]:
+                if cargo == voto[1]["Cargo"]:
                     find = True
                     allOptions = False
                     break
-            if find == False:
-                print(str(cargo["Key"]) + ")", cargo["Descripcion"])
+            if not find:
+                print(str(cargo) + ")", opcionesCargos[cargo]["Descripcion"])
         if allOptions == False:
             print(
                 "Si no ve alguna Opcion significa que Votante ya ha realizado un voto para ese cargo")
-        dato = input("Por Favor,  => ")
+        dato = input("Por Favor,  Ingrese un cargo => ")
+        if dato.lower() in {"volver", "volver atras"}:
+            return
+        while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in opcionesCargos.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]) :
+            if dato.lower() in {"volver", "volver atrás"}:
+                return
+            dato = input("Opcion Incorrecta, por Favor Seleccione un cargo =>")
+        element["Cargo"] = str(dato)
 
+        deDondeVengo = "Partidos Politicos"
+        ParametrizacionVer()
+        deDondeVengo = "Alta Nuevos Votos"
+        dato = input("Por Favor, Ingrese el Partido Politico del Votante => ")
+        if dato.lower() in {"volver", "volver atrás"}:
+            return
+        while not (dato in listaPartidosPoliticos.keys() or dato in [opcion["Nombre"] for opcion in listaPartidosPoliticos.values()]):
+            if dato.lower() in {"volver", "volver atrás"}:
+                return
+            dato = input("Opcion Incorrecta, por Favor Seleccione un Partido Politico Valido =>")
+        element["Partido Politico"] = str(dato)
+        
+        if votos == {}:
+            clave = 1
+        else:
+            clave = max(votos.keys()) + 1
+
+        textoEscribir = ""
+        totalElementos = len(element)
+        indiceActual = 0
+        for propiedad, valor in element.items():
+            indiceActual += 1
+            textoEscribir += str(propiedad) + ": " + str(valor)
+            if indiceActual != totalElementos:
+                textoEscribir += " / "
+        print(str(clave) + ")", textoEscribir)
+
+        confirmacion = EjecutarConfirmacion()
+        if confirmacion == True:
+            votos[clave] = element
+            print(deDondeVengo, "Registrado Existosamente")
+        else:
+            print(deDondeVengo, "No Registrado")
 
     # Mostrar Opciones Menu Principal
+    def VotacionAltaAutomatica():
+        global deDondeVengo
+        element = {}
+        
+        dato = str(random.randint(1, 99999999))
+        while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
+            dato = str(random.randint(1, 99999999))
+        element["Dni"] = str(dato)
+        
+        datoVotos = ValidacionVotosPrevios(dato)
+        if datoVotos != {}:
+            element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
+        else:
+            dato = random.choice(list(listaProvincias.keys()))
+            element["Provincia"] = str(dato)
+        
+        while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+            if dato.lower() in {"volver", "volver atrás"}:
+                return
+            dato = random.choice(list(opcionesCargos.keys()))
+        element["Cargo"] = str(dato)
+        
+        dato = random.choice(list(listaPartidosPoliticos.keys()))
+        element["Partido Politico"] = str(dato)
+        
+        if votos == {}:
+            clave = 1
+        else:
+            clave = max(votos.keys()) + 1
 
+        textoEscribir = ""
+        totalElementos = len(element)
+        indiceActual = 0
+        for propiedad, valor in element.items():
+            indiceActual += 1
+            textoEscribir += str(propiedad) + ": " + str(valor)
+            if indiceActual != totalElementos:
+                textoEscribir += " / "
+        print(str(clave) + ")", textoEscribir)
+
+        votos[clave] = element
+        print(deDondeVengo, "Registrado Existosamente")
 
     def MostrarOpcionesMenuPrincipal():
         for opcion, Funcion in opcionesMenuPrincipal.items():
@@ -93,7 +183,6 @@ def main():
                 return False
             else:
                 print("Opción inválida. Por favor, selecciona nuevamente.")
-
 
     # verificamos si no hay simbolos
     def ValidacionUnicamenteTexto(texto):
@@ -439,8 +528,8 @@ def main():
 
     def ValidacionDNI(dni):
         cantidad = 0
-        for element in Votos:
-            if element["Dni"] == dni:
+        for clave,element in votos.items():
+            if str(element["Dni"]) == str(dni):
                 cantidad += 1
         if cantidad <= 4:
             return True
@@ -449,9 +538,9 @@ def main():
 
     def ValidacionVotosPrevios(dni):
         elements = {}
-        for element in Votos:
-            if element["Dni"] == dni:
-                elements[element["Key"]] = element["Value"]
+        for clave,element in votos.items():
+            if str(element["Dni"]) == str(dni):
+                elements[clave] = votos[clave]
         return elements
 
     def WriteRegionesGeograficas(info):
@@ -544,9 +633,8 @@ def main():
     }
 
     opcionesMenuVotacionAlta = {
-        "1": {"Descripcion": "Automatica", "Funcion": temporal},
-        "2": {"Descripcion": "SemiAutomatica", "Funcion": temporal},
-        "3": {"Descripcion": "Manual", "Funcion": VotacionAltaManual}
+        "1": {"Descripcion": "Automatica", "Funcion": VotacionAltaAutomatica},
+        "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual}
     }
 
     opcionesMenuVotacion = {
@@ -560,14 +648,44 @@ def main():
         "3": {"Descripcion": "Votacion", "Funcion": MenuGenerico, "Menu": opcionesMenuVotacion}
     }
 
-    Votos = {}
+    votos = {}
 
     # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
     listaPartidosPoliticos = {
+        "1": {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Lista": "1"},
+        "2": {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Lista": "2"},
+        "3": {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Lista": "3"},
+        "4": {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Lista": "4"},
+        "5": {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Lista": "5"},
+        "6": {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Lista": "6"},
     }
 
     # Diccionario de provincias la clave es un numero autoincremental y su nombre
     listaProvincias = {
+        "1": {"Nombre": "CABA", "Codigo": "1"},
+        "2": {"Nombre": "BUENOS AIRES", "Codigo": "2"},
+        "3": {"Nombre": "CATAMARCA", "Codigo": "3"},
+        "4": {"Nombre": "CHACO", "Codigo": "4"},
+        "5": {"Nombre": "CHUBUT", "Codigo": "5"},
+        "6": {"Nombre": "CORDOBA", "Codigo": "6"},
+        "7": {"Nombre": "CORRIENTES", "Codigo": "7"},
+        "8": {"Nombre": "ENTRE RIOS", "Codigo": "8"},
+        "9": {"Nombre": "FORMOSA", "Codigo": "9"},
+        "10": {"Nombre": "JUJUY", "Codigo": "10"},
+        "11": {"Nombre": "LA PAMPA", "Codigo": "11"},
+        "12": {"Nombre": "LA RIOJA", "Codigo": "12"},
+        "13": {"Nombre": "MENDOZA", "Codigo": "13"},
+        "14": {"Nombre": "MISIONES", "Codigo": "14"},
+        "15": {"Nombre": "NEUQUEN", "Codigo": "15"},
+        "16": {"Nombre": "RIO NEGRO", "Codigo": "16"},
+        "17": {"Nombre": "SALTA", "Codigo": "17"},
+        "18": {"Nombre": "SAN JUAN", "Codigo": "18"},
+        "19": {"Nombre": "SAN LUIS", "Codigo": "19"},
+        "20": {"Nombre": "SANTA CRUZ", "Codigo": "20"},
+        "21": {"Nombre": "SANTA FE", "Codigo": "21"},
+        "22": {"Nombre": "SANTIAGO DEL ESTERO", "Codigo": "22"},
+        "23": {"Nombre": "TIERRA DEL FUEGO", "Codigo": "23"},
+        "24": {"Nombre": "TUCUMAN", "Codigo": "24"}
     }
 
     datosDeCadaLista = {
@@ -576,7 +694,9 @@ def main():
     }
 
     while True:
-        if salirAlMenuPrincipal == "":
+        global salirAlMenuPrincipal
+        global deDondeVengo
+        if 'salirAlMenuPrincipal' in globals():
             if salirAlMenuPrincipal != False:
                 print("Bienvenido al Sistema de Elecciones Presidenciales")
         salirAlMenuPrincipal = False
