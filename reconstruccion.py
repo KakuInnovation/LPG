@@ -1,7 +1,6 @@
 import random
 filereg = 'db/regiones.csv'
 filepartpol = 'db/partidos.csv'
-filevotacion = 'db/votacion.csv'
 
 def main():
     # funcion para alta de votos Manual
@@ -163,13 +162,13 @@ def main():
 
         deDondeVengo = "Opciones Cargos"
         ParametrizacionVer()
-        cargo = input("Por Favor, Seleccione una Provincia => ")
+        cargo = input("Por Favor, Seleccione un Cargos => ")
         if cargo.lower() in {"volver", "volver atras"}:
             return
         while not (cargo in opcionesCargos.keys()):
             if cargo.lower() in {"volver", "volver atras"}:
                 return
-            cargo = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
+            cargo = input("Opcion Incorrecta, por Favor Seleccione un Cargos Valido => ")
 
         votosTotales = 0
         elements = {}
@@ -199,12 +198,16 @@ def main():
         for clave, element in elements.items():
             porcentaje = element["Cantidad Votos"] * 100 / votosTotales
             element["Porcentaje"] = porcentaje
-            print(clave +")",element["Partido"] + ":" ,porcentaje,"%")
+            print(clave +")",element["Partido"] + ":" ,str(porcentaje) + "%", "con" ,element["Cantidad Votos"] ,"Votos")
         
         if esDescarga == False:
             input("Pulse Enter para Continuar ")
             return
         else:
+            element = {}
+            element["Provincia"] = listaProvincias.get(str(provincia), {}).get("Nombre", None)
+            element["Cargo"] = opcionesCargos.get(str(cargo), {}).get("Descripcion", None)
+            elements["DatosNombreArchivo"] = element
             return elements
 
     # Mostrar Opciones Menu Principal
@@ -633,15 +636,20 @@ def main():
                 print("Archivo Generado")
 
     def WriteArchivoVotacion():
+        print("Descargado Votaciones...")
         info = PorcentajeVotacion(True)
         if info != None:
+            datosTexto = ""
+            datosTexto = (info.get("DatosNombreArchivo", {}).get("Provincia", "") + info.get("DatosNombreArchivo", {}).get("Cargo", ""))
+            del info["DatosNombreArchivo"]
+
+            filevotacion = 'db/votacion'+ str(datosTexto)+'.csv'
             f = open(filevotacion, 'w', encoding='UTF-8')
 
             try:
                 for reg in info.values():
                     registro = ""
-                    registro = str(reg["Lista"]) + ";" + \
-                        reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
+                    registro = reg["Partido"] + ";" + str(reg["Cantidad Votos"]) + ";" + str(reg["Porcentaje"]) + "\n"
                     str(registro)
                     f.write(registro)
             except:
@@ -649,6 +657,8 @@ def main():
             finally:
                 f.close()
                 print("Archivo Generado")
+                input("Pulse Enter para Continuar ")
+
 
     # Diccionario de opciones y Funciones asociadas opciones del ABM
     opcionesABM = {
@@ -675,11 +685,6 @@ def main():
         "1": {"Descripcion": "Partidos Politicos", "Funcion": DecargarPartidosPoliticos},
         "2": {"Descripcion": "Regiones Geograficas", "Funcion": DecargarRegionesGeograficas},
         "3": {"Descripcion": "Votaciones",  "Funcion": WriteArchivoVotacion}
-    }
-
-    opcionesMenuDescargaArchivos = {
-        "1": {"Descripcion": "Partidos Politicos", "Funcion": DecargarPartidosPoliticos},
-        "2": {"Descripcion": "Regiones Geograficas", "Funcion": DecargarRegionesGeograficas}
     }
 
     opcionesMenuVotacionAlta = {
