@@ -148,6 +148,11 @@ def main():
 
     # Funcion para mostrar los porcentajes de descarga
     def PorcentajeVotacion(esDescarga=False):
+        if len(votos) == 0:
+            print("Aun no hay Votos Cargados")
+            input("Pulse Enter para Continuar ")
+            return None
+        
         global deDondeVengo
         deDondeVengo = "Regiones Geograficas"
         ParametrizacionVer()
@@ -186,12 +191,15 @@ def main():
                         break
                 votosTotales += 1
 
+        if votosTotales == 0:
+            print("No hay Votos con esta Combinacion")
+            input("Pulse Enter para Continuar ")
+            return None
+
         for clave, element in elements.items():
             porcentaje = element["Cantidad Votos"] * 100 / votosTotales
             element["Porcentaje"] = porcentaje
             print(clave +")",element["Partido"] + ":" ,str(porcentaje) + "%", "con" ,element["Cantidad Votos"] ,"Votos")
-        
-        
         
         if esDescarga == False:
             input("Pulse Enter para Continuar ")
