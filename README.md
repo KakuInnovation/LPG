@@ -6,20 +6,16 @@ UADE Copa Algoritmia 2023
 - Guerrero, Alejandro: https://github.com/KakuInnovation alguerrero@uade.edu.ar
 - Pedemonte, Matias https://github.com/catafrulo mpedemonte@uade.edu.ar
 - Roubineau, Augusto: https://github.com/AugstR CRoubineau@uade.edu.ar
-- Voutsina, Luciano: https://github.com/1UCHQ LVoutsina@uade.edu.ar
 
 ## Link del Proyecto
 - https://github.com/KakuInnovation/LPG
 
 ## Aclaraciones
-- El programa debe ejecutarse desde el archivo "CONTROLLER.PY"
-- Para un correcto orden en el código, buscando escalabilidad y simplicidad para el mantenimiento, utilizamos el patron de diseño MVC - Model - View - Controller.
+- El programa debe ejecutarse desde el archivo "PPROGRAM.PY"
 - Las estructuras de programación utilizadas son POO - Programación Orientada a Objetos y Funciones.
 - Segun entendemos con el mensaje dicho por la VARANDO MARIA EUGENIA entendemos que el tema de cargos, no contemplamos para esta etapa la funcionalidad de cargo ya que esa funcionalidad estaria pensada para la siguente etapa:
-    - Funcionlidad Pedida: Los cargos a elegir serán presidente y vicepresidente (código 1), diputado (2), senador (3), gobernador y vicegobernador (4). Estos datos no deberán ser ingresados ya que se encuentran preestablecidos. Para simplificar el proceso se omiten cargos de menor nivel como intendentes y concejales.
-    - Mensaje: Hola Ivan buenas tardes, la idea de la primera etapa es que generen los datos con los que van a trabajar el resto de las etapas. En este caso tienen que generar los procesos repetitivos correspondientes con sus respectivas validaciones para lograr ingresar el conjunto de los datos con los que vamos a trabajar. En esta etapa se les pide que estos datos queden guardados en archivos CSV (texto plano donde cada uno de los campos dentro del registro queda separado por - ; - (punto y coma). En esta primera estapa NO HAY VOTACION. 
+- Funcionlidad Pedida: Los cargos a elegir serán presidente y vicepresidente (código 1), diputado (2), senador (3), gobernador y vicegobernador (4). Estos datos no deberán ser ingresados ya que se encuentran preestablecidos. Para simplificar el proceso se omiten cargos de menor nivel como intendentes y concejales.
 - Para mejorar la UX (experencia de usuario), hemos mejorado la funcionlidad de corte de ingreso de datos (ingresar "FIN"), por un menu dinamico y amigable para el usuario
-- En caso de querer usar datos precargados se pueden tomar en archivos datosTemplete y reemplazar en los atributos del contructor de la clase view
 - En Archivos Generados ya se encuentrar los archivos de salida solicitados, y en caso de querer generarlos estos se veran en la carpeta del proyecto en la carpeta db
 
 ## Funcionamiento
@@ -27,6 +23,10 @@ UADE Copa Algoritmia 2023
     Este funciona de la siguente manera:
         - Tenemos un bucle inicial que mientras este activo va a hacer que el programa este activo al terminarse finaliza el programa
         - Las opciones de menu se crear con bibliotecas con valor especificos para asi poder ser llamadas correctamente
+        - Se realizan los calculos correspondientes para obtener el porcentaje de votos de los respectivos partidos politicos y su print y comparacion con los otros partido politicos
+        - Se integro la funcionalidad de carga automatica de votos con su respectiva validacion que permite al usuario ingresar N votos con un rango entre 0 y 999.999.999
+        - Se agregaron validaciones y modificaciones a los inputs que permiten al usuario flexibilidad a la hora de manejarse dentro del programa y menues
+        - El usuario tambien puede subir su propio voto y tambien puede descargar tanto los votos subidos por el usuario como los creados por el programa
             - Clave: es un numero de nuestra opcion
             - Valores:
                 - descripcion: valor que va a ser el titulo de nuestra opcion y tambien puede ser elegida como opcion

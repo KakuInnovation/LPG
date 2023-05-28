@@ -122,7 +122,7 @@ def main():
                 dato = random.choice(list(listaProvincias.keys()))
                 element["Provincia"] = str(dato)
 
-            while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+            while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
                 dato = random.choice(list(opcionesCargos.keys()))
             element["Cargo"] = str(dato)
 
@@ -177,7 +177,7 @@ def main():
             element["Partido"] = partido["Nombre"]
             element["Cantidad Votos"] = 0
             elements[clave] = element
- 
+
         for clave, element in votos.items():
             if str(element["Provincia"]) == str(provincia) and str(element["Cargo"]) == str(cargo):
                 for clave2, element2 in elements.items():
@@ -185,20 +185,13 @@ def main():
                         element2["Cantidad Votos"] += 1
                         break
                 votosTotales += 1
-        
-        if votosTotales == 0:
-            print("No hay Votos con esta Combinacion")
-            if esDescarga == False:
-                input("Pulse Enter para Continuar ")
-                return
-            else:
-                return None
-
 
         for clave, element in elements.items():
             porcentaje = element["Cantidad Votos"] * 100 / votosTotales
             element["Porcentaje"] = porcentaje
             print(clave +")",element["Partido"] + ":" ,str(porcentaje) + "%", "con" ,element["Cantidad Votos"] ,"Votos")
+        
+        
         
         if esDescarga == False:
             input("Pulse Enter para Continuar ")
