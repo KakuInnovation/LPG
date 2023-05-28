@@ -123,29 +123,29 @@ def main():
                 dato = random.choice(list(listaProvincias.keys()))
                 element["Provincia"] = str(dato)
 
-        while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-            dato = random.choice(list(opcionesCargos.keys()))
-        element["Cargo"] = str(dato)
+            while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+                dato = random.choice(list(opcionesCargos.keys()))
+            element["Cargo"] = str(dato)
 
-        dato = random.choice(list(listaPartidosPoliticos.keys()))
-        element["Partido"] = str(dato)
+            dato = random.choice(list(listaPartidosPoliticos.keys()))
+            element["Partido"] = str(dato)
 
-        if votos == {}:
-            clave = 1
-        else:
-            clave = max(votos.keys()) + 1
+            if votos == {}:
+                clave = 1
+            else:
+                clave = max(votos.keys()) + 1
 
-        textoEscribir = ""
-        totalElementos = len(element)
-        indiceActual = 0
-        for propiedad, valor in element.items():
-            indiceActual += 1
-            textoEscribir += str(propiedad) + ": " + str(valor)
-            if indiceActual != totalElementos:
-                textoEscribir += " / "
-        print(str(clave) + ")", textoEscribir)
+            textoEscribir = ""
+            totalElementos = len(element)
+            indiceActual = 0
+            for propiedad, valor in element.items():
+                indiceActual += 1
+                textoEscribir += str(propiedad) + ": " + str(valor)
+                if indiceActual != totalElementos:
+                    textoEscribir += " / "
+            print(str(clave) + ")", textoEscribir)
 
-        votos[clave] = element
+            votos[clave] = element
 
     def PorcentajeVotacion(esDescarga=False, provincia=1, cargo=1):
         votosTotales = 0
