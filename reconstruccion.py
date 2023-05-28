@@ -13,7 +13,7 @@ def main():
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
         if dato.lower() in {"volver", "volver atras"}:
             return
-        while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
+        while not str(dato).isdigit() or not 0 < int(dato) <= 999999999 or not ValidacionDNI(dato):
             if dato.lower() in {"volver", "volver atras"}:
                 return
             if ValidacionDNI(dato):
@@ -35,11 +35,11 @@ def main():
             dato = input("Por Favor, Ingrese la Provincia del Votante => ")
             if dato.lower() in {"volver", "volver atras"}:
                 return
-            while not (dato in listaProvincias.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]):
+            while not (dato in listaProvincias.keys()):
                 if dato.lower() in {"volver", "volver atras"}:
                     return
                 dato = input(
-                    "Opcion Incorrecta, por Favor Seleccione un Provincia Valida =>")
+                    "Opcion Incorrecta, por Favor Seleccione un Provincia Valida = >")
             element["Provincia"] = str(dato)
 
         print("Cargos Disponibles:")
@@ -59,10 +59,10 @@ def main():
         dato = input("Por Favor,  Ingrese un cargo => ")
         if dato.lower() in {"volver", "volver atras"}:
             return
-        while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in opcionesCargos.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+        while not (dato in opcionesCargos.keys()) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
             if dato.lower() in {"volver", "volver atras"}:
                 return
-            dato = input("Opcion Incorrecta, por Favor Seleccione un cargo =>")
+            dato = input("Opcion Incorrecta, por Favor Seleccione un cargo => ")
         element["Cargo"] = str(dato)
 
         deDondeVengo = "Partidos Politicos"
@@ -71,11 +71,11 @@ def main():
         dato = input("Por Favor, Ingrese el Partido Politico del Votante => ")
         if dato.lower() in {"volver", "volver atras"}:
             return
-        while not (dato in listaPartidosPoliticos.keys() or dato in [opcion["Nombre"] for opcion in listaPartidosPoliticos.values()]):
+        while not (dato in listaPartidosPoliticos.keys()):
             if dato.lower() in {"volver", "volver atras"}:
                 return
             dato = input(
-                "Opcion Incorrecta, por Favor Seleccione un Partido Politico Valido =>")
+                "Opcion Incorrecta, por Favor Seleccione un Partido Politico Valido => ")
         element["Partido"] = str(dato)
 
         if votos == {}:
@@ -111,9 +111,9 @@ def main():
         global deDondeVengo
         for i in range(int(cantRegistros)):
             element = {}
-            dato = str(random.randint(1, 99999999))
-            while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
-                dato = str(random.randint(1, 99999999))
+            dato = str(random.randint(1, 999999999))
+            while not str(dato).isdigit() or not 0 < int(dato) <= 999999999 or not ValidacionDNI(dato):
+                dato = str(random.randint(1, 999999999))
             element["Dni"] = str(dato)
         
             datoVotos = ValidacionVotosPrevios(dato)
@@ -147,13 +147,14 @@ def main():
 
             votos[clave] = element
 
+    # Funcion para mostrar los porcentajes de descarga
     def PorcentajeVotacion(esDescarga=False, provincia=1, cargo=1):
         votosTotales = 0
         elements = {}
         for clave, partido in listaPartidosPoliticos.items():
             element = {}
             element["Partido"] = partido["Nombre"]
-            element["CantidadVotos"] = 0
+            element["Cantidad Votos"] = 0
             elements[clave] = element
 
         for clave, element in votos.items():
@@ -237,7 +238,6 @@ def main():
 
     # Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
     # Si se equivoca multiples veces mostrar Recordatorio
-
     def MensajeVolverAtras(cantidad=0):
         if cantidad == 0:
             print(
@@ -430,7 +430,7 @@ def main():
 
         dato = input("Ingrese el campo a Modificar => ")
         if dato.lower() in {"volver", "volver atras"}:
-                return
+            return
 
         listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
         encontrado = BuscarElementoLista(dato, listaATrabajar)
@@ -478,12 +478,12 @@ def main():
             lista = listaPartidosPoliticos
         elif deDondeVengo == "Regiones Geograficas":
             lista = listaProvincias
+        elif deDondeVengo == "Opciones Cargos":
+            lista = opcionesCargos
 
-        valorOpcion = 0
         if lista != None:
             print(deDondeVengo)
             for clave, obj in lista.items():
-                valorOpcion += 1
                 textoEscribir = ""
                 totalElementos = len(obj)
                 indiceActual = 0
@@ -492,7 +492,7 @@ def main():
                     textoEscribir += str(propiedad) + ": " + str(valor)
                     if indiceActual != totalElementos:
                         textoEscribir += " / "
-                print(str(valorOpcion) + ")", textoEscribir)
+                print(str(clave) + ")", textoEscribir)
         else:
             print("No hay", deDondeVengo, "Cargadas")
         input("Pulse Enter para Continuar ")
@@ -599,28 +599,45 @@ def main():
                 f.close()
                 print("Archivo Generado")
 
-    def WriteArchivoVotacion(info):
-        if info != None:
-            f = open(filevotacion, 'w', encoding='UTF-8')
+    def WriteArchivoVotacion():
+        global deDondeVengo
+        deDondeVengo = "Regiones Geograficas"
+        ParametrizacionVer()
+        MensajeVolverAtras()
+        provincia = input("Por Favor, Seleccione una Provincia => ")
+        if provincia.lower() in {"volver", "volver atras"}:
+            return
+        while not (provincia in listaProvincias.keys()):
+            if provincia.lower() in {"volver", "volver atras"}:
+                return
+            provincia = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
 
-            try:
-                for reg in info.values():
-                    registro = ""
-                    registro = str(reg["Lista"]) + ";" + \
-                        reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
-                    str(registro)
-                    f.write(registro)
-            except:
-                print("Error al escribir el Archivo")
-            finally:
-                f.close()
-                print("Archivo Generado")
+        deDondeVengo = "Opciones Cargos"
+        ParametrizacionVer()
+        cargo = input("Por Favor, Seleccione una Provincia => ")
+        if cargo.lower() in {"volver", "volver atras"}:
+            return
+        while not (cargo in opcionesCargos.keys()):
+            if cargo.lower() in {"volver", "volver atras"}:
+                return
+            cargo = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
 
-    def readPartidosPoliticos(self):
-        pass
+        info = PorcentajeVotacion(True, provincia, cargo)
 
-    def readRegionesGeograficas(self):
-        pass
+        f = open(filevotacion, 'w', encoding='UTF-8')
+
+        try:
+            for reg in info.values():
+                registro = ""
+                registro = str(reg["Lista"]) + ";" + \
+                    reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
+                str(registro)
+                f.write(registro)
+        except:
+            print("Error al escribir el Archivo")
+        finally:
+            f.close()
+            print("Archivo Generado")
 
     # Diccionario de opciones y Funciones asociadas opciones del ABM
     opcionesABM = {
@@ -645,7 +662,8 @@ def main():
     # Diccionario de opciones y Funciones asociadas Menu Descarga Archivos
     opcionesMenuDescargaArchivos = {
         "1": {"Descripcion": "Partidos Politicos", "Funcion": DecargarPartidosPoliticos},
-        "2": {"Descripcion": "Regiones Geograficas", "Funcion": DecargarRegionesGeograficas}
+        "2": {"Descripcion": "Regiones Geograficas", "Funcion": DecargarRegionesGeograficas},
+        "3": {"Descripcion": "Votaciones",  "Funcion": WriteArchivoVotacion}
     }
 
     opcionesMenuDescargaArchivos = {
