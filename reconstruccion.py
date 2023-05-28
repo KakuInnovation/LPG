@@ -16,10 +16,10 @@ def main():
         MensajeVolverAtras()
         element = {}
         dato = input("Por Favor, Ingrese el DNI del Votante => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
             return
         while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             if ValidacionDNI(dato):
                 print("Este Votante ya ha realizado todas ha relizado todos sus votos.")
@@ -41,7 +41,7 @@ def main():
             if dato.lower() in {"volver", "volver atras"}:
                 return
             while not (dato in listaProvincias.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]):
-                if dato.lower() in {"volver", "volver atrás"}:
+                if dato.lower() in {"volver", "volver atras"}:
                     return
                 dato = input(
                     "Opcion Incorrecta, por Favor Seleccione un Provincia Valida =>")
@@ -65,7 +65,7 @@ def main():
         if dato.lower() in {"volver", "volver atras"}:
             return
         while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in opcionesCargos.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             dato = input("Opcion Incorrecta, por Favor Seleccione un cargo =>")
         element["Cargo"] = str(dato)
@@ -74,10 +74,10 @@ def main():
         ParametrizacionVer()
         deDondeVengo = "Alta Nuevos Votos"
         dato = input("Por Favor, Ingrese el Partido Politico del Votante => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
             return
         while not (dato in listaPartidosPoliticos.keys() or dato in [opcion["Nombre"] for opcion in listaPartidosPoliticos.values()]):
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             dato = input(
                 "Opcion Incorrecta, por Favor Seleccione un Partido Politico Valido =>")
@@ -107,47 +107,52 @@ def main():
 
     # Mostrar Opciones Menu Principal
     def VotacionAltaAutomatica():
-        global deDondeVengo
-        element = {}
-
-        dato = str(random.randint(1, 99999999))
-        while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
-            dato = str(random.randint(1, 99999999))
-        element["Dni"] = str(dato)
-
-        datoVotos = ValidacionVotosPrevios(dato)
-        if datoVotos != {}:
-            element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
-        else:
-            dato = random.choice(list(listaProvincias.keys()))
-            element["Provincia"] = str(dato)
-
-        while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-            if dato.lower() in {"volver", "volver atrás"}:
+        cantRegistros = input("Por favor, Ingrese la Cantidad de Votos => ")
+        while not str(cantRegistros).isdigit():
+            if cantRegistros.lower() in {"volver", "volver atras"}:
                 return
-            dato = random.choice(list(opcionesCargos.keys()))
-        element["Cargo"] = str(dato)
+            cantRegistros = input("Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
+        
+        global deDondeVengo
+        for i in range(int(cantRegistros)):
+            element = {}
+            dato = str(random.randint(1, 99999999))
+            while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
+                dato = str(random.randint(1, 99999999))
+            element["Dni"] = str(dato)
+        
+            datoVotos = ValidacionVotosPrevios(dato)
+            if datoVotos != {}:
+                element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
+            else:
+                dato = random.choice(list(listaProvincias.keys()))
+                element["Provincia"] = str(dato)
 
-        dato = random.choice(list(listaPartidosPoliticos.keys()))
-        element["Partido Politico"] = str(dato)
+            while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+                if dato.lower() in {"volver", "volver atras"}:
+                    return
+                dato = random.choice(list(opcionesCargos.keys()))
+            element["Cargo"] = str(dato)
 
-        if votos == {}:
-            clave = 1
-        else:
-            clave = max(votos.keys()) + 1
+            dato = random.choice(list(listaPartidosPoliticos.keys()))
+            element["Partido Politico"] = str(dato)
 
-        textoEscribir = ""
-        totalElementos = len(element)
-        indiceActual = 0
-        for propiedad, valor in element.items():
-            indiceActual += 1
-            textoEscribir += str(propiedad) + ": " + str(valor)
-            if indiceActual != totalElementos:
-                textoEscribir += " / "
-        print(str(clave) + ")", textoEscribir)
+            if votos == {}:
+                clave = 1
+            else:
+                clave = max(votos.keys()) + 1
 
-        votos[clave] = element
-        print(deDondeVengo, "Registrado Existosamente")
+            textoEscribir = ""
+            totalElementos = len(element)
+            indiceActual = 0
+            for propiedad, valor in element.items():
+                indiceActual += 1
+                textoEscribir += str(propiedad) + ": " + str(valor)
+                if indiceActual != totalElementos:
+                    textoEscribir += " / "
+            print(str(clave) + ")", textoEscribir)
+
+            votos[clave] = element
 
     def MostrarOpcionesMenuPrincipal():
         for opcion, Funcion in opcionesMenuPrincipal.items():
@@ -322,7 +327,7 @@ def main():
         MensajeVolverAtras()
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             else:
                 elemento[campo] = ValidacionesCampo(dato, campo, "Alta")
@@ -353,7 +358,7 @@ def main():
         encontrado = None
         mostrarMensajeVolverAtras = 0
         while encontrado == None:
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             else:
                 for clave, opciones in listaATrabajar.items():
@@ -378,7 +383,7 @@ def main():
         print("Baja", deDondeVengo)
         ParametrizacionVer()
         dato = input("Ingrese el elemento a Eliminar => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
                 return
         listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
         dato = BuscarElementoLista(dato, listaATrabajar)
@@ -412,7 +417,7 @@ def main():
         MensajeVolverAtras()
 
         dato = input("Ingrese el campo a Modificar => ")
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
                 return
 
         listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
@@ -423,13 +428,13 @@ def main():
 
         for campo in opciones:
             dato = input("Ingrese " + campo + " => ")
-            if dato.lower() in {"volver", "volver atrás"}:
+            if dato.lower() in {"volver", "volver atras"}:
                 return
             else:
                 elemento[campo] = ValidacionesCampo(
                     dato, campo, "Modificar", encontrado)
 
-        if dato.lower() in {"volver", "volver atrás"}:
+        if dato.lower() in {"volver", "volver atras"}:
                 return
 
         clave = max(listaATrabajar.keys()) + 1
