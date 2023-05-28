@@ -102,20 +102,26 @@ def main():
 
     # funcion para alta de votos Automatica
     def VotacionAltaAutomatica():
+        cantRegistros = input("Por favor, Ingrese la Cantidad de Votos => ")
+        while not str(cantRegistros).isdigit():
+            if cantRegistros.lower() in {"volver", "volver atras"}:
+                return
+            cantRegistros = input("Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
+        
         global deDondeVengo
-        element = {}
-
-        dato = str(random.randint(1, 99999999))
-        while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
+        for i in range(int(cantRegistros)):
+            element = {}
             dato = str(random.randint(1, 99999999))
-        element["Dni"] = str(dato)
-
-        datoVotos = ValidacionVotosPrevios(dato)
-        if datoVotos != {}:
-            element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
-        else:
-            dato = random.choice(list(listaProvincias.keys()))
-            element["Provincia"] = str(dato)
+            while not str(dato).isdigit() or not 0 < int(dato) <= 99999999 or not ValidacionDNI(dato):
+                dato = str(random.randint(1, 99999999))
+            element["Dni"] = str(dato)
+        
+            datoVotos = ValidacionVotosPrevios(dato)
+            if datoVotos != {}:
+                element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
+            else:
+                dato = random.choice(list(listaProvincias.keys()))
+                element["Provincia"] = str(dato)
 
         while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
             dato = random.choice(list(opcionesCargos.keys()))
@@ -124,23 +130,22 @@ def main():
         dato = random.choice(list(listaPartidosPoliticos.keys()))
         element["Partido"] = str(dato)
 
-        if votos == {}:
-            clave = 1
-        else:
-            clave = max(votos.keys()) + 1
+            if votos == {}:
+                clave = 1
+            else:
+                clave = max(votos.keys()) + 1
 
-        textoEscribir = ""
-        totalElementos = len(element)
-        indiceActual = 0
-        for propiedad, valor in element.items():
-            indiceActual += 1
-            textoEscribir += str(propiedad) + ": " + str(valor)
-            if indiceActual != totalElementos:
-                textoEscribir += " / "
-        print(str(clave) + ")", textoEscribir)
+            textoEscribir = ""
+            totalElementos = len(element)
+            indiceActual = 0
+            for propiedad, valor in element.items():
+                indiceActual += 1
+                textoEscribir += str(propiedad) + ": " + str(valor)
+                if indiceActual != totalElementos:
+                    textoEscribir += " / "
+            print(str(clave) + ")", textoEscribir)
 
         votos[clave] = element
-        print(deDondeVengo, "Registrado Existosamente")
 
     def PorcentajeVotacion(esDescarga=False, provincia=1, cargo=1):
         votosTotales = 0
