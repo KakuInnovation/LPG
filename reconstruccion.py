@@ -123,7 +123,7 @@ def main():
                 dato = random.choice(list(listaProvincias.keys()))
                 element["Provincia"] = str(dato)
 
-            while not (dato in opcionesCargos.keys() or dato in [opcion["Nombre"] for opcion in listaProvincias.values()]) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+            while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
                 dato = random.choice(list(opcionesCargos.keys()))
             element["Cargo"] = str(dato)
 
@@ -148,29 +148,7 @@ def main():
             votos[clave] = element
 
     # Funcion para mostrar los porcentajes de descarga
-    def PorcentajeVotacion(esDescarga=False):
-        global deDondeVengo
-        deDondeVengo = "Regiones Geograficas"
-        ParametrizacionVer()
-        MensajeVolverAtras()
-        provincia = input("Por Favor, Seleccione una Provincia => ")
-        if provincia.lower() in {"volver", "volver atras"}:
-            return
-        while not (provincia in listaProvincias.keys()):
-            if provincia.lower() in {"volver", "volver atras"}:
-                return
-            provincia = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
-
-        deDondeVengo = "Opciones Cargos"
-        ParametrizacionVer()
-        cargo = input("Por Favor, Seleccione una Provincia => ")
-        if cargo.lower() in {"volver", "volver atras"}:
-            return
-        while not (cargo in opcionesCargos.keys()):
-            if cargo.lower() in {"volver", "volver atras"}:
-                return
-            cargo = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
-
+    def PorcentajeVotacion(esDescarga=False, provincia=1, cargo=1):
         votosTotales = 0
         elements = {}
         for clave, partido in listaPartidosPoliticos.items():
@@ -178,7 +156,7 @@ def main():
             element["Partido"] = partido["Nombre"]
             element["Cantidad Votos"] = 0
             elements[clave] = element
- 
+
         for clave, element in votos.items():
             if str(element["Provincia"]) == str(provincia) and str(element["Cargo"]) == str(cargo):
                 for clave2, element2 in elements.items():
@@ -186,26 +164,17 @@ def main():
                         element2["Cantidad Votos"] += 1
                         break
                 votosTotales += 1
-        
-        if votosTotales == 0:
-            print("No hay Votos con esta Combinacion")
-            if esDescarga == False:
-                input("Pulse Enter para Continuar ")
-                return
-            else:
-                return None
-
 
         for clave, element in elements.items():
             porcentaje = element["Cantidad Votos"] * 100 / votosTotales
             element["Porcentaje"] = porcentaje
             print(clave +")",element["Partido"] + ":" ,porcentaje,"%")
         
+        
+        
         if esDescarga == False:
             input("Pulse Enter para Continuar ")
-            return
-        else:
-            return elements
+        return
 
     # Mostrar Opciones Menu Principal
     def MostrarOpcionesMenuPrincipal():
@@ -633,22 +602,44 @@ def main():
                 print("Archivo Generado")
 
     def WriteArchivoVotacion():
-        info = PorcentajeVotacion(True)
-        if info != None:
-            f = open(filevotacion, 'w', encoding='UTF-8')
+        global deDondeVengo
+        deDondeVengo = "Regiones Geograficas"
+        ParametrizacionVer()
+        MensajeVolverAtras()
+        provincia = input("Por Favor, Seleccione una Provincia => ")
+        if provincia.lower() in {"volver", "volver atras"}:
+            return
+        while not (provincia in listaProvincias.keys()):
+            if provincia.lower() in {"volver", "volver atras"}:
+                return
+            provincia = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
 
-            try:
-                for reg in info.values():
-                    registro = ""
-                    registro = str(reg["Lista"]) + ";" + \
-                        reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
-                    str(registro)
-                    f.write(registro)
-            except:
-                print("Error al escribir el Archivo")
-            finally:
-                f.close()
-                print("Archivo Generado")
+        deDondeVengo = "Opciones Cargos"
+        ParametrizacionVer()
+        cargo = input("Por Favor, Seleccione una Provincia => ")
+        if cargo.lower() in {"volver", "volver atras"}:
+            return
+        while not (cargo in opcionesCargos.keys()):
+            if cargo.lower() in {"volver", "volver atras"}:
+                return
+            cargo = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
+
+        info = PorcentajeVotacion(True, provincia, cargo)
+
+        f = open(filevotacion, 'w', encoding='UTF-8')
+
+        try:
+            for reg in info.values():
+                registro = ""
+                registro = str(reg["Lista"]) + ";" + \
+                    reg["Nombre"] + ";" + reg["Abreviatura"] + "\n"
+                str(registro)
+                f.write(registro)
+        except:
+            print("Error al escribir el Archivo")
+        finally:
+            f.close()
+            print("Archivo Generado")
 
     # Diccionario de opciones y Funciones asociadas opciones del ABM
     opcionesABM = {
