@@ -12,7 +12,6 @@ UADE Copa Algoritmia 2023
 
 ## Aclaraciones
 - El programa debe ejecutarse desde el archivo "PPROGRAM.PY"
-- Segun entendemos con el mensaje dicho por la VARANDO MARIA EUGENIA entendemos que el tema de cargos, no contemplamos para esta etapa la funcionalidad de cargo ya que esa 
 - Para mejorar la UX (experencia de usuario), hemos mejorado la funcionlidad de corte de ingreso de datos (ingresar "FIN"), por un menu dinamico y amigable para el usuario
 - En Archivos Generados ya se encuentrar los archivos de salida solicitados, y en caso de querer generarlos estos se veran en la carpeta del proyecto en la carpeta db
 - Al no usar librerias y ni objetos contamos con un problema de relentizacion que empieza a notrarse con los 10000 votos, debido a la cantidad masiva de registros que cargamos sobre una misma variable. Una posible solucion seria hacer diccionario de los votos es decir, un diccionario donde esten todas las provincias y luego dentro de las provincias un segundo donde esten los cargos como un diccionario con sus votos. No hemos pudido llegar a desarrollar esto por falta de tiempo.
