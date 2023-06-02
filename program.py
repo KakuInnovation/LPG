@@ -1,11 +1,6 @@
 import random
-import colorama
-from colorama import Fore, Back, Style
-colorama.init(autoreset=True)
-
 filereg = 'db/regiones.csv'
 filepartpol = 'db/partidos.csv'
-
 
 def main():
     # funcion para alta de votos Manual
@@ -66,17 +61,16 @@ def main():
         while not (dato in opcionesCargos.keys()) and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
             if dato.lower() in {"volver", "volver atras"}:
                 return
-            dato = input(
-                "Opcion Incorrecta, por Favor Seleccione un cargo => ")
+            dato = input("Opcion Incorrecta, por Favor Seleccione un cargo => ")
         element["Cargo"] = str(dato)
 
         deDondeVengo = "Partidos Politicos"
-        ParametrizacionVer()
+        ParametrizacionVer(True)
         deDondeVengo = "Alta Nuevos Votos"
         dato = input("Por Favor, Ingrese el Partido Politico del Votante => ")
         if dato.lower() in {"volver", "volver atras"}:
             return
-        while not (dato in listaPartidosPoliticos.keys()):
+        while not (dato in listaPartidosPoliticos.keys()) and not str(dato) == "0":
             if dato.lower() in {"volver", "volver atras"}:
                 return
             dato = input(
@@ -111,9 +105,8 @@ def main():
         while not str(cantRegistros).isdigit():
             if cantRegistros.lower() in {"volver", "volver atras"}:
                 return
-            cantRegistros = input(
-                "Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
-
+            cantRegistros = input("Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
+        
         global deDondeVengo
         for i in range(int(cantRegistros)):
             element = {}
@@ -121,11 +114,10 @@ def main():
             while not str(dato).isdigit() or not 0 < int(dato) <= 999999999 or not ValidacionDNI(dato):
                 dato = str(random.randint(1, 999999999))
             element["Dni"] = str(dato)
-
+        
             datoVotos = ValidacionVotosPrevios(dato)
             if datoVotos != {}:
-                element["Provincia"] = next(
-                    iter(datoVotos.values()))["Provincia"]
+                element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
             else:
                 dato = random.choice(list(listaProvincias.keys()))
                 element["Provincia"] = str(dato)
@@ -134,7 +126,11 @@ def main():
                 dato = random.choice(list(opcionesCargos.keys()))
             element["Cargo"] = str(dato)
 
-            dato = random.choice(list(listaPartidosPoliticos.keys()))
+            dato = str(random.randint(0, len(listaPartidosPoliticos)))
+            if dato != "0":
+                claves = list(listaPartidosPoliticos.keys())
+                dato = claves[int(dato) - 1]
+                
             element["Partido"] = str(dato)
 
             if votos == {}:
@@ -154,13 +150,13 @@ def main():
 
             votos[clave] = element
 
-    # Funcion para mostrar los porcentajes de descarga
+    # Funcion para mostrar los porcentajes
     def PorcentajeVotacion(esDescarga=False):
         if len(votos) == 0:
             print("Aun no hay Votos Cargados")
             input("Pulse Enter para Continuar ")
             return None
-
+        
         global deDondeVengo
         deDondeVengo = "Regiones Geograficas"
         ParametrizacionVer()
@@ -171,8 +167,7 @@ def main():
         while not (provincia in listaProvincias.keys()):
             if provincia.lower() in {"volver", "volver atras"}:
                 return
-            provincia = input(
-                "Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
+            provincia = input("Opcion Incorrecta, por Favor Seleccione un Provincia Valida => ")
 
         deDondeVengo = "Opciones Cargos"
         ParametrizacionVer()
@@ -182,16 +177,23 @@ def main():
         while not (cargo in opcionesCargos.keys()):
             if cargo.lower() in {"volver", "volver atras"}:
                 return
-            cargo = input(
-                "Opcion Incorrecta, por Favor Seleccione un Cargos Valido => ")
+            cargo = input("Opcion Incorrecta, por Favor Seleccione un Cargos Valido => ")
 
         votosTotales = 0
         elements = {}
         for clave, partido in listaPartidosPoliticos.items():
             element = {}
             element["Partido"] = partido["Nombre"]
+            element["PartidoCodigo"] = clave
             element["Cantidad Votos"] = 0
             elements[clave] = element
+
+        if len(elements) != 0:
+            element = {}
+            element["Partido"] = "VOTO EN BLANCO"
+            element["PartidoCodigo"] = "0"
+            element["Cantidad Votos"] = 0
+            elements["0"] = element
 
         for clave, element in votos.items():
             if str(element["Provincia"]) == str(provincia) and str(element["Cargo"]) == str(cargo):
@@ -199,31 +201,117 @@ def main():
                     if str(clave2) == str(element["Partido"]):
                         element2["Cantidad Votos"] += 1
                         break
+                        
                 votosTotales += 1
 
         if votosTotales == 0:
             print("No hay Votos con esta Combinacion")
             input("Pulse Enter para Continuar ")
             return None
+        cargoTexto = opcionesCargos.get(str(cargo), {}).get("Descripcion", None)
+        provinciaTexto = listaProvincias.get(str(provincia), {}).get("Nombre", None)
 
-        for clave, element in elements.items():
-            porcentaje = element["Cantidad Votos"] * 100 / votosTotales
-            element["Porcentaje"] = porcentaje
-            print(clave + ")", element["Partido"] + ":", str(porcentaje) +
-                  "%", "con", element["Cantidad Votos"], "Votos")
+        elements = MuestraYCalculoDePorcentajes(elements, votosTotales, cargoTexto, provinciaTexto)
 
         if esDescarga == False:
             input("Pulse Enter para Continuar ")
             return
         else:
             element = {}
-            element["Provincia"] = listaProvincias.get(
-                str(provincia), {}).get("Nombre", None)
-            element["Cargo"] = opcionesCargos.get(
-                str(cargo), {}).get("Descripcion", None)
+            element["Provincia"] = provinciaTexto
+            element["ProvinciaCodigo"] = str(provincia)
+            element["Cargo"] = cargoTexto
             elements["DatosNombreArchivo"] = element
             return elements
 
+    # Funcion para mostrar los porcentajes Presidencia de todaas las provincias
+    def PorcentajeVotacionPresidencia(esDescarga=False):
+        if len(votos) == 0:
+            print("Aun no hay Votos Cargados")
+            input("Pulse Enter para Continuar ")
+            return None
+        
+        global deDondeVengo
+        cargo = "1"
+        votosTotales = 0
+        elements = {}
+        for clave, partido in listaPartidosPoliticos.items():
+            element = {}
+            element["Partido"] = partido["Nombre"]
+            element["PartidoCodigo"] = clave
+            element["Cantidad Votos"] = 0
+            elements[clave] = element
+
+        if len(elements) != 0:
+            element = {}
+            element["Partido"] = "VOTO EN BLANCO"
+            element["Cantidad Votos"] = 0
+            element["PartidoCodigo"] = "0"
+            elements["0"] = element
+
+        for clave, element in votos.items():
+            if str(element["Cargo"]) == cargo:
+                for clave2, element2 in elements.items():
+                    if str(clave2) == str(element["Partido"]):
+                        element2["Cantidad Votos"] += 1
+                        break
+                        
+                votosTotales += 1
+
+        if votosTotales == 0:
+            print("No hay Votos para Presidencia Aun")
+            input("Pulse Enter para Continuar ")
+            return None
+        cargoTexto = opcionesCargos.get(str(cargo), {}).get("Descripcion", None)
+        
+        elements = MuestraYCalculoDePorcentajes(elements, votosTotales, cargoTexto)
+
+        if esDescarga == False:
+            input("Pulse Enter para Continuar ")
+            return
+        else:
+            element = {}
+            element["Provincia"] = "Nacionales"
+            element["ProvinciaCodigo"] = "Nacionales"
+            element["Cargo"] = cargoTexto
+            elements["DatosNombreArchivo"] = element
+            return elements
+        
+    def MuestraYCalculoDePorcentajes(elements, votosTotales, cargoTexto, provinciaTexto = "Nacionales"):
+        print("Region:", provinciaTexto)
+        print("---------------------------------------------------------------------------------------------------------------")
+        print("Elecciones Generales 2023")
+        print("---------------------------------------------------------------------------------------------------------------")
+        print("Categoria:", cargoTexto)
+        print("---------------------------------------------------------------------------------------------------------------")
+        cantidadVotosEnBlanco = elements.get(("0"), {}).get("Cantidad Votos", None)
+        porcentajeEnBlanco = cantidadVotosEnBlanco * 100 / votosTotales
+        porcentajePositivo = 100-porcentajeEnBlanco
+
+        porcentajeEnBlanco = "{:.2f}".format(porcentajeEnBlanco)
+        porcentajePositivo = "{:.2f}".format(porcentajePositivo)
+
+        votosPais = len(votos)
+        votosPais = votosTotales * 100 / votosPais
+        votosPais = "{:.2f}".format(votosPais)
+        
+        print("Electrores Habilitados:", votosTotales,"/ Porcentaje de Votos Totales:",votosPais + "%")
+        print("---------------------------------------------------------------------------------------------------------------")
+        elements = dict(sorted(elements.items(), key=lambda x: x[1]["Cantidad Votos"], reverse=True))
+        index = 1
+        for clave, element in elements.items():
+            porcentaje = element["Cantidad Votos"] * 100 / votosTotales
+            porcentaje = "{:.2f}".format(porcentaje)+ "%"
+            if clave != "0":
+                print(str(index) +")",element["Partido"] + ":" ,porcentaje, "con" ,element["Cantidad Votos"] ,"Votos")
+                index += 1
+            element["Porcentaje"] = porcentaje
+        print("---------------------------------------------------------------------------------------------------------------")
+        print("Votos Positivos:", votosTotales-cantidadVotosEnBlanco,"/", porcentajePositivo + "%")
+        print("Votos En Blanco:", cantidadVotosEnBlanco,"/", porcentajeEnBlanco + "%")
+        print("Votos Totales:", votosTotales,"/", "100%")
+        return elements
+        
     # Mostrar Opciones Menu Principal
     def MostrarOpcionesMenuPrincipal():
         for opcion, Funcion in opcionesMenuPrincipal.items():
@@ -275,181 +363,6 @@ def main():
         deDondeVengo = "Regiones Geograficas"
         ParametrizacionVer()
 
-    # Función  Descargar Escrutinio Presidente y Vicepresidente
-    def ConsultaEscrutinioPresiVice():
-        print("Generando reporte escrutinio Presidente y Vicepresidente...")
-# De la votación, se queda sólo con los datos relevantes para el Cargo requerido dentro de un Diccionario
-        presidenteVicepresi = DepurarVotos(1)
-        ReporteEscrutinio("Presidente y Vicepresidente", presidenteVicepresi)
-
-    # Función Descargar Escrutinio Gobernador y Vicegobernador
-    def ConsultaEscrutinioGobVice():
-        print("Generando reporte escrutinio Gobernador y Vicegobernador...")
-        gobernadorVicegob = DepurarVotos(4)
-        ReporteEscrutinio("Gobernador y Vicegobernador", gobernadorVicegob)
-
-    # Función Descargar Escrutinio Senadores
-    def ConsultaEscrutinioSenadores():
-        print("Generando reporte escrutinio Senadores...")
-        senadores = DepurarVotos(3)
-        ReporteEscrutinio("Senadores", senadores)
-
-    # Función Descargar Escrutinio Diputados
-    def ConsultaEscrutinioDiputados():
-        print("Generando reporte escrutinio Diputados...")
-        diputados = DepurarVotos(2)
-        ReporteEscrutinio("Diputados", diputados)
-
-# Función
-    def ReporteEscrutinio(cargo, votos):
-# Recorre las Regiones
-        filas = len(votos)
-        sumaTotalVotos = 0
-        sumEle = 0
-# Cantidad de Electores en la Región
-        sumEle = len(listaPartidosPoliticos)
-        
-        for region in range(1, filas):
-# Suma la cantidad de votos que se tuvo en la Región para el Cargo correspondiente
-            sumaTotalVotos += sum(votos[region])
-
-        for region in range(1, filas):
-            #suma = 0
-            porcVot = 0
-
-# Suma la cantidad de votos que se tuvo en la Región para el Cargo correspondiente
-            suma = sum(votos[region])
-# Recupera el Nombre de la Región
-            nombreReg = listaProvincias[str(region)]
-# Porcentaje de Votantes para la Región para el Cargo versus el 100% de los votos de las elecciones
-            if sumaTotalVotos != 0:
-                porcVot = (suma * 100) / sumaTotalVotos
-
-        #  Imprime el header
-            print("")
-            print("---------------------------------------------------------------------------------------------------------------")
-            print(f"{Back.RED}                                            {nombreReg['Nombre']}                                                        ")
-            print(f"{Back.RESET}---------------------------------------------------------------------------------------------------------------")
-            print("                                      ELECCIONES GENERALES 2023                                               ")
-            print(f"                                        Categoría: {cargo}                                               ")
-            print("")
-            print(f"                                     Electores habilitados: {sumEle}                                               ")
-            print(f"                                     Porcentaje de votantes: {round(porcVot, 2)} %                                             ")
-            print("---------------------------------------------------------------------------------------------------------------")
-            print("            N° LISTA                      PARTIDO POLÍTICO                          VOTOS             %        ")
-            print("---------------------------------------------------------------------------------------------------------------")
-            partido = 0
-# Recorre las Listas
-            for cantVotos in votos[region]:
-                if cantVotos != 0 and suma != 0:
-                    porcVotPartido = (cantVotos * 100) / suma
-                    partido += 1
-                    partidoPol = listaPartidosPoliticos[str(partido)]
-
-                    print(f"{Back.CYAN}            {partido}                          {partidoPol['Nombre']}                           {cantVotos}              {round(porcVotPartido, 2)}        ")
-                    print(f"{Back.RESET}                                        {partido}")
-                    print("---------------------------------------------------------------------------------------------------------------")
-            print(f"                                                  VOTOS POSITIVOS: | {suma}         | 100.00 %                 ")
-            print("                                                                    --------------------------------------------")
-            print(f"                                                  VOTOS EN BLANCO: |                  |                  ")
-            print("                                                                    --------------------------------------------")
-            print(f"                                                            TOTAL: | {suma}         | 100.00 %                 ")
-            print("                                                                    --------------------------------------------")
-            print("")
-
-# Depuro, contabilizo y ordeno por región los votos del Cargo indicado.
-    def DepurarVotos(cargo):
-        # Matriz que guarda Región y Partido/Lista y cuenta votos
-        matriz = []
-# Inicializa la Matriz, 24 filas (Regiones) x 6 columnas (Listas)
-        for i in range(0, 25):
-            matriz.append([0]*7)
-
-# Recorre los votos. Agrega la votación a la Región y al Partido correspondiente y cuenta el voto.
-        for clave, element in votos.items():
-            # Se queda con los registros del Cargo indicado.
-            if str(element["Cargo"]) == str(cargo):
-                # Recupera la fila (Región)
-                fila = matriz[int(element["Provincia"])]
-# Suma un voto para la Región/Partido
-                fila[int(element["Partido"])] += 1
-
-        return matriz
-
-    # Funcion Descargar Escrutinio
-    def DescargarEscrutinio():
-# De la votación, se queda sólo con los datos relevantes para el Cargo requerido dentro de un Diccionario
-        print("Generando file escrutinio Presidente y Vicepresidente...")
-        presiVicepresi = DepurarVotos(1)
-        CrearArchivoEscrutinio("Presidente y Vicepresidente", presiVicepresi)
-
-        print("Generando file escrutinio Gobernador y Vicegobernador...")
-        gobVicegob = DepurarVotos(4)
-        CrearArchivoEscrutinio("Gobernador y Vicegobernador", gobVicegob)
-
-        print("Generando file escrutinio Senadores...")
-        sen = DepurarVotos(3)
-        CrearArchivoEscrutinio("Senadores", sen)
-
-        print("Generando file escrutinio Diputados...")
-        dip = DepurarVotos(2)
-        CrearArchivoEscrutinio("Diputados", dip)
-
-    def CrearArchivoEscrutinio(cargo, votos):
-# Recorre las Regiones
-        filas = len(votos)
-        sumaTotalVotos = 0
-        sumEle = 0
-# Cantidad de Electores en la Región
-        sumEle = len(listaPartidosPoliticos)
-        
-        for region in range(1, filas):
-# Suma la cantidad de votos que se tuvo en la Región para el Cargo correspondiente
-            sumaTotalVotos += sum(votos[region])
-
-        for region in range(1, filas):
-            #suma = 0
-            porcVot = 0
-
-# Suma la cantidad de votos que se tuvo en la Región para el Cargo correspondiente
-            suma = sum(votos[region])
-# Recupera el Nombre de la Región
-            nombreReg = listaProvincias[str(region)]
-# Porcentaje de Votantes para la Región para el Cargo versus el 100% de los votos de las elecciones
-            if sumaTotalVotos != 0:
-                porcVot = (suma * 100) / sumaTotalVotos
-
-# Arma nombre del Archivo <REGION>_<CARGO>.csv
-            filename = ""
-            filename = 'db/escrutinio/' + nombreReg['Nombre'] + '_' + cargo + ".csv"
-
-            partido = 0
-# Abrimos el archivo para escritura
-            f = open(filename, 'w', encoding='UTF-8')
-
-            try:
-    # Recorre las Listas/Partidos de la Región
-                for cantVotos in votos[region]:
-                    if cantVotos != 0 and suma != 0:
-                        porcVotPartido = (cantVotos * 100) / suma
-                        partido += 1
-                        partidoPol = listaPartidosPoliticos[str(partido)]
-        # Guarda Archivos por Región + Lista + Cantidad de Votos + Porcentaje
-                        reg = {
-                            "COD_REGION" : region,
-                            "NRO_LISTA" : partido,
-                            "VOTOS_OBTENIDOS" : cantVotos,
-                            "PORCENTAJE" : round(porcVotPartido, 2)
-                        }
-
-    # Escribimos el Archivo
-                        f.write(str(reg))
-            except:
-                print("Error al escribir el Archivo")
-            finally:
-                f.close()
-                print("Archivo Generado")
-
     # Funcion para no tener que repetir el mismo mensaje permitiendo cambiar facilmente
     def MensajeErrorValidacion(dato, campo, tipo):
         if tipo == "Modificar":
@@ -468,8 +381,7 @@ def main():
             print(
                 "Ingrese 'Volver Atras' o 'Volver'en cualquier momento si desea Regresar al Menu anterior.")
         elif cantidad == 3:
-            print(
-                "Recuerde que Ingresando 'Volver Atras' o 'Volver' Regresara al Menu anterior.")
+            print("Recuerde que Ingresando 'Volver Atras' o 'Volver' Regresara al Menu anterior.")
         cantidad += 1
         return cantidad
 
@@ -622,7 +534,7 @@ def main():
         ParametrizacionVer()
         dato = input("Ingrese el elemento a Eliminar => ")
         if dato.lower() in {"volver", "volver atras"}:
-            return
+                return
         listaATrabajar = datosDeCadaLista[deDondeVengo]["Lista"]
         dato = BuscarElementoLista(dato, listaATrabajar)
 
@@ -673,7 +585,7 @@ def main():
                     dato, campo, "Modificar", encontrado)
 
         if dato.lower() in {"volver", "volver atras"}:
-            return
+                return
 
         clave = max(listaATrabajar.keys()) + 1
 
@@ -697,7 +609,7 @@ def main():
             print("Cambio No Registrado")
 
     # Funcion Parametrizacion Ver
-    def ParametrizacionVer():
+    def ParametrizacionVer(votacion = False):
         global deDondeVengo
         lista = None
         if deDondeVengo == "Partidos Politicos":
@@ -721,6 +633,8 @@ def main():
                 print(str(clave) + ")", textoEscribir)
         else:
             print("No hay", deDondeVengo, "Cargadas")
+        if votacion == True:
+            print("0) Voto en Blanco")
         input("Pulse Enter para Continuar ")
 
     # Funcion menu Generico
@@ -825,32 +739,39 @@ def main():
                 f.close()
                 print("Archivo Generado")
 
-    def WriteArchivoVotacion():
+    def getInfoArchivoVotacionRegional():
         print("Descargado Votaciones...")
         info = PorcentajeVotacion(True)
+        WriteArchivoVotacion(info)
+
+    def getInfoArchivoVotacionPresidencia():
+        print("Descargado Votaciones...")
+        info = PorcentajeVotacionPresidencia(True)
+        WriteArchivoVotacion(info)
+
+    def WriteArchivoVotacion(info):
         if info != None:
             datosTexto = ""
-            datosTexto = (info.get("DatosNombreArchivo", {}).get(
-                "Provincia", "") + info.get("DatosNombreArchivo", {}).get("Cargo", ""))
+            datosTexto = (info.get("DatosNombreArchivo", {}).get("Provincia", "") + info.get("DatosNombreArchivo", {}).get("Cargo", ""))
+            provinciaCodigo = info.get("DatosNombreArchivo", {}).get("ProvinciaCodigo", "")
             del info["DatosNombreArchivo"]
 
-            filevotacion = 'db/votacion' + str(datosTexto)+'.csv'
+            filevotacion = 'db/votacion'+ str(datosTexto)+'.csv'
             f = open(filevotacion, 'w', encoding='UTF-8')
 
             try:
                 for reg in info.values():
-                    registro = ""
-                    registro = reg["Partido"] + ";" + \
-                        str(reg["Cantidad Votos"]) + ";" + \
-                        str(reg["Porcentaje"]) + "\n"
-                    str(registro)
-                    f.write(registro)
+                    if reg["PartidoCodigo"] != "0":
+                        registro = provinciaCodigo + ";" +  reg["PartidoCodigo"] + ";" + str(reg["Cantidad Votos"]) + ";" + reg["Porcentaje"] + "\n"
+                        str(registro)
+                        f.write(registro)
             except:
                 print("Error al escribir el Archivo")
             finally:
                 f.close()
-                print("Archivo Generado")
                 input("Pulse Enter para Continuar ")
+                print("Archivo Generado")
+
 
     # Diccionario de opciones y Funciones asociadas opciones del ABM
     opcionesABM = {
@@ -866,16 +787,6 @@ def main():
         "3": {"Descripcion": "Senador"},
         "4": {"Descripcion": "Gobernador y Vicegobernador"}
     }
-
-    # Diccionario de opciones y Funciones asociadas Menu Escrutinio
-    opcionesMenuEscrutinio = {
-        "1": {"Descripcion": "Consulta resultados Presidente y Vicepresidente", "Funcion": ConsultaEscrutinioPresiVice},
-        "2": {"Descripcion": "Consulta resultados Gobernador y Vicegobernador", "Funcion": ConsultaEscrutinioGobVice},
-        "3": {"Descripcion": "Consulta resultados Senadores", "Funcion": ConsultaEscrutinioSenadores},
-        "4": {"Descripcion": "Consulta resultados Diputados", "Funcion": ConsultaEscrutinioDiputados},
-        "5": {"Descripcion": "Generación de archivos", "Funcion": DescargarEscrutinio}
-    }
-
     # Diccionario de opciones y Funciones asociadas Menu Parametizacion
     opcionesMenuParametrizacion = {
         "1": {"Descripcion": "Partidos Politicos", "Funcion": MenuGenerico, "Menu": opcionesABM},
@@ -894,16 +805,18 @@ def main():
         "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual}
     }
 
-    opcionesMenuVotacion = {
-        "1": {"Descripcion": "Alta Nuevos Votos", "Funcion": MenuGenerico, "Menu": opcionesMenuVotacionAlta},
-        "2": {"Descripcion": "Ver Porcentajes", "Funcion": PorcentajeVotacion}
+    opcionesEscrutino = {
+        "1": {"Descripcion": "Ver Porcentajes Por Region", "Funcion": PorcentajeVotacion},
+        "2": {"Descripcion": "Ver Porcentaje Presidencial Nacional", "Funcion": PorcentajeVotacionPresidencia},
+        "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
+        "4": {"Descripcion": "Descargar Votacion Presidencial Nacional", "Funcion": getInfoArchivoVotacionPresidencia}
     }
 
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
-        "2": {"Descripcion": "Descarga de Archivos", "Funcion": MenuGenerico, "Menu": opcionesMenuDescargaArchivos},
-        "3": {"Descripcion": "Votacion", "Funcion": MenuGenerico, "Menu": opcionesMenuVotacion},
-        "4": {"Descripcion": "Escrutinio", "Funcion": MenuGenerico, "Menu": opcionesMenuEscrutinio}
+        "2": {"Descripcion": "Descarga de Archivos de Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuDescargaArchivos},
+        "3": {"Descripcion": "Alta de Votos", "Funcion": MenuGenerico, "Menu": opcionesMenuVotacionAlta},
+        "4": {"Descripcion": "Escrutinio", "Funcion": MenuGenerico, "Menu": opcionesEscrutino}
     }
 
     votos = {}
