@@ -17,6 +17,8 @@ UADE Copa Algoritmia 2023
 - Funcionlidad Pedida: Los cargos a elegir serán presidente y vicepresidente (código 1), diputado (2), senador (3), gobernador y vicegobernador (4). Estos datos no deberán ser ingresados ya que se encuentran preestablecidos. Para simplificar el proceso se omiten cargos de menor nivel como intendentes y concejales.
 - Para mejorar la UX (experencia de usuario), hemos mejorado la funcionlidad de corte de ingreso de datos (ingresar "FIN"), por un menu dinamico y amigable para el usuario
 - En Archivos Generados ya se encuentrar los archivos de salida solicitados, y en caso de querer generarlos estos se veran en la carpeta del proyecto en la carpeta db
+- IMPORTANTE - Para ver los reportes de la Etapa 3 en colores, en caso de no contar con el módulo necesario instalado por defecto en el framework de desarrollo, se debe ejecutar desde la línea de comandos la instalación del módulo de python COLORAMA con el comando "pip install colorama (Windows) / pip3 install colorama (Mac) / python -m pip install colorama  (Windows) / python3 -m pip install colorama (Mac)".
+- La descarga de los archivos de escrutinio, se almacenarán en db/escrutinio/<REGION>_<CARGO>.csv
 
 ## Funcionamiento
 - Menus: Nuestro Programa esta usando menus de consola para acceder a todas las funcionalidad. 
