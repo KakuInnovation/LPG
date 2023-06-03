@@ -479,6 +479,38 @@ def main():
                         return True
         return False
 
+    def VerficacionSegundaVuelta(info):
+        index = 1
+        for clave,reg in info.values():
+            if clave!=0:
+                if index==1:
+                    partido1 = reg
+                    index+=1
+                elif index==2:
+                    partido2 = reg
+                    break
+        partido1Porcentaje = partido1["Porcentaje"][:-1]
+        partido1Porcentaje = float(partido1["Porcentaje"][:-1])
+        partido2Porcentaje = float(partido2["Porcentaje"][:-1])
+
+        diferencia = partido1Porcentaje - partido2Porcentaje
+        if diferencia < 0:
+            diferencia *= -1
+        
+        if diferencia>5 and partido1Porcentaje>40:
+            print(f"El partido",partido1["Partido"],"ha ganado las elecciones")
+
+        elif diferencia>5 and partido1Porcentaje>40:
+            print(f"El partido",partido2["Partido"],"ha ganado las elecciones")
+        else:
+            #if 
+            print("Se Requiere una Segunda Vuelta")
+
+        input("Pulse Enter para Continuar ")
+
+        #if float(partido1["Porcentaje"]) 
+
+
     # funcion para validar cada dato d e las altas
     def ValidacionesCampo(dato, campo, tipo, claveElemento=""):
         global deDondeVengo
@@ -829,6 +861,8 @@ def main():
         info = PorcentajeVotacionPresidencia(True)
         WriteArchivoVotacion(info)
 
+        VerficacionSegundaVuelta(info)
+
     def WriteArchivoVotacion(info):
         if info != None:
             datosTexto = ""
@@ -895,8 +929,9 @@ def main():
         "2": {"Descripcion": "Ver Porcentaje Presidencial Nacional", "Funcion": PorcentajeVotacionPresidencia},
         "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
         "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia},
-        "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta"}
+        "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta" }
     }
+
 
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
