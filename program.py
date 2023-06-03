@@ -352,6 +352,52 @@ def main():
             elements["DatosNombreArchivo"] = element
             return elements
 
+    def PorcetajeSegundaVuelta(esDescarga=False):
+        votosTotales = 0
+        elements = {}
+        for clave, partido in listaPartidosPoliticos.items():
+            element = {}
+            element["Partido"] = partido["Nombre"]
+            element["PartidoCodigo"] = clave
+            element["Cantidad Votos"] = 0
+            elements[clave] = element
+
+        if len(elements) != 0:
+            element = {}
+            element["Partido"] = "VOTO EN BLANCO"
+            element["Cantidad Votos"] = 0
+            element["PartidoCodigo"] = "0"
+            elements["0"] = element
+
+        for clave, element in votosSegundaVuelta.items():
+            for clave2, element2 in elements.items():
+                if str(clave2) == str(element["Partido"]):
+                    element2["Cantidad Votos"] += 1
+                    break
+
+            votosTotales += 1
+
+        if votosTotales == 0:
+            print("No hay Votos para Presidencia Aun")
+            input("Pulse Enter para Continuar ")
+            return None
+        cargoTexto = opcionesCargos.get(
+            str("1"), {}).get("Descripcion", None)
+
+        elements = MuestraYCalculoDePorcentajes(
+            elements, votosTotales, cargoTexto)
+
+        if esDescarga == False:
+            input("Pulse Enter para Continuar ")
+            return
+        else:
+            element = {}
+            element["Provincia"] = "Nacionales"
+            element["ProvinciaCodigo"] = "Nacionales"
+            element["Cargo"] = cargoTexto
+            elements["DatosNombreArchivo"] = element
+            return elements
+
     def MuestraYCalculoDePorcentajes(elements, votosTotales, cargoTexto, provinciaTexto="Nacionales"):
         print("Region:", provinciaTexto)
         print("---------------------------------------------------------------------------------------------------------------")
@@ -480,6 +526,46 @@ def main():
                     else:
                         return True
         return False
+
+    def VerficacionSegundaVuelta(info, esdescarga = False):
+        index = 1
+        for clave,reg in info.values():
+            if clave!=0:
+                if index==1:
+                    partido1 = reg
+                    index+=1
+                elif index==2:
+                    partido2 = reg
+                    break
+        partido1Porcentaje = partido1["Porcentaje"][:-1]
+        partido1Porcentaje = float(partido1["Porcentaje"][:-1])
+        partido2Porcentaje = float(partido2["Porcentaje"][:-1])
+
+        diferencia = partido1Porcentaje - partido2Porcentaje
+        if diferencia < 0:
+            diferencia *= -1
+        
+        if diferencia>5 and partido1Porcentaje>40:
+            print(f"El partido",partido1["Partido"],"ha ganado las elecciones")
+            print("No es Necesaria Segunda Vuelta")
+            input("Pulse Enter para Continuar ")
+        elif diferencia>5 and partido1Porcentaje>40:
+            print(f"El partido",partido2["Partido"],"ha ganado las elecciones")
+            print("No es Necesaria Segunda Vuelta")
+            input("Pulse Enter para Continuar ")
+        else:
+            if votosSegundaVuelta != {}:
+                print("Mostrar quien gano")
+            else:
+                print(f"Los partidos", partido1["Partido"],"y", partido2["Partido"], "iran a Balotage")
+                input("Presione Enter para Continuar")
+                VotacionAltaAutomaticaSegundaVuelta()
+                resultadoSegundaVuelta = PorcetajeSegundaVuelta()
+
+        
+
+        #if float(partido1["Porcentaje"]) 
+
 
     # funcion para validar cada dato d e las altas
     def ValidacionesCampo(dato, campo, tipo, claveElemento=""):
@@ -786,6 +872,12 @@ def main():
                 elements[clave] = votos[clave]
         return elements
 
+    def ValidacionVotosSegundaVuelta(dni):
+        for clave, element in votos.items():
+            if str(element["Dni"]) == str(dni):
+                return True
+        return False
+
     def WriteRegionesGeograficas(info):
         if info != None:
             # print("RegionesGeograficas of Model")
@@ -830,6 +922,12 @@ def main():
         print("Descargado Votaciones...")
         info = PorcentajeVotacionPresidencia(True)
         WriteArchivoVotacion(info)
+
+        VerficacionSegundaVuelta(info, True)
+
+    def getInfoArchivoVotacionPresidencia():
+        info = PorcentajeVotacionPresidencia()
+        VerficacionSegundaVuelta(info)
 
     def WriteArchivoVotacion(info):
         if info != None:
