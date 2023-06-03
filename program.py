@@ -484,9 +484,9 @@ def main():
 
     def VerficacionSegundaVuelta(info, esdescarga=False):
         index = 1
-        for clave, reg in info.values():
-            if clave != 0:
-                if index == 1:
+        for clave,reg in info.items():
+            if clave!=0:
+                if index==1:
                     partido1 = reg
                     index += 1
                 elif index == 2:
