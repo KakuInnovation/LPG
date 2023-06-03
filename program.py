@@ -870,6 +870,12 @@ def main():
                 elements[clave] = votos[clave]
         return elements
 
+    def ValidacionVotosSegundaVuelta(dni):
+        for clave, element in votos.items():
+            if str(element["Dni"]) == str(dni):
+                return True
+        return False
+
     def WriteRegionesGeograficas(info):
         if info != None:
             # print("RegionesGeograficas of Model")
