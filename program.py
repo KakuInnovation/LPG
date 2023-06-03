@@ -809,9 +809,11 @@ def main():
         "1": {"Descripcion": "Ver Porcentajes Por Region", "Funcion": PorcentajeVotacion},
         "2": {"Descripcion": "Ver Porcentaje Presidencial Nacional", "Funcion": PorcentajeVotacionPresidencia},
         "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
-        "4": {"Descripcion": "Descargar Votacion Presidencial Nacional", "Funcion": getInfoArchivoVotacionPresidencia}
+        "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia}
+        "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta", "Funcion": }
     }
 
+    
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
         "2": {"Descripcion": "Descarga de Archivos de Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuDescargaArchivos},
