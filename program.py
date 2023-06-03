@@ -190,14 +190,13 @@ def main():
                 element["Provincia"] = str(dato)
 
 # Selecciona al azar un Cargo - SÓLAMENTE APLICA A PRESIDENTE Y VICEPRESIDENTE
-            while not dato in opcionesCargosSegundaVuelta.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-                dato = random.choice(list(opcionesCargosSegundaVuelta.keys()))
+            while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+                dato = random.choice(list(opcionesCargos.keys()))
             element["Cargo"] = str(dato)
-
-            dato = str(random.randint(
-                0, len(listaPartidosPoliticosSegundaVuelta)))
+# Selecciona el partido político
+            dato = str(random.randint(0, len(listaPartidosPoliticos)))
             if dato != "0":
-                claves = list(listaPartidosPoliticosSegundaVuelta.keys())
+                claves = list(listaPartidosPoliticos.keys())
                 dato = claves[int(dato) - 1]
 
             element["Partido"] = str(dato)
@@ -217,7 +216,7 @@ def main():
                     textoEscribir += " / "
             print(str(clave) + ")", textoEscribir)
 
-            votosSegundaVuelta[clave] = element
+            votos[clave] = element
 
     # Funcion para mostrar los porcentajes
 
@@ -339,52 +338,6 @@ def main():
             return None
         cargoTexto = opcionesCargos.get(
             str(cargo), {}).get("Descripcion", None)
-
-        elements = MuestraYCalculoDePorcentajes(
-            elements, votosTotales, cargoTexto)
-
-        if esDescarga == False:
-            input("Pulse Enter para Continuar ")
-            return
-        else:
-            element = {}
-            element["Provincia"] = "Nacionales"
-            element["ProvinciaCodigo"] = "Nacionales"
-            element["Cargo"] = cargoTexto
-            elements["DatosNombreArchivo"] = element
-            return elements
-
-    def PorcetajeSegundaVuelta(esDescarga=False):
-        votosTotales = 0
-        elements = {}
-        for clave, partido in listaPartidosPoliticos.items():
-            element = {}
-            element["Partido"] = partido["Nombre"]
-            element["PartidoCodigo"] = clave
-            element["Cantidad Votos"] = 0
-            elements[clave] = element
-
-        if len(elements) != 0:
-            element = {}
-            element["Partido"] = "VOTO EN BLANCO"
-            element["Cantidad Votos"] = 0
-            element["PartidoCodigo"] = "0"
-            elements["0"] = element
-
-        for clave, element in votosSegundaVuelta.items():
-            for clave2, element2 in elements.items():
-                if str(clave2) == str(element["Partido"]):
-                    element2["Cantidad Votos"] += 1
-                    break
-
-            votosTotales += 1
-
-        if votosTotales == 0:
-            print("No hay Votos para Presidencia Aun")
-            input("Pulse Enter para Continuar ")
-            return None
-        cargoTexto = opcionesCargos.get(
-            str("1"), {}).get("Descripcion", None)
 
         elements = MuestraYCalculoDePorcentajes(
             elements, votosTotales, cargoTexto)
@@ -821,6 +774,11 @@ def main():
             # mostramos opciones
             MostrarOpcionesMenu(menu)
 
+            if deDondeVengo == "Alta de Votos" and len(votosSegundaVuelta) != 0:
+                print("Ya ha pasado el tiempo de Votacion")
+                input("Pulse Enter para Continuar ")
+                
+
             # solicitamos opcion
             seleccion = input("Por favor, selecciona una opcion => ")
 
@@ -976,12 +934,6 @@ def main():
         "3": {"Descripcion": "Senador"},
         "4": {"Descripcion": "Gobernador y Vicegobernador"}
     }
-
-# Aplica el Diccionario sólo para la segunda vuelta
-    opcionesCargosSegundaVuelta = {
-        "1": {"Descripcion": "Presidente y Vicepresidente"}
-    }
-
     # Diccionario de opciones y Funciones asociadas Menu Parametizacion
     opcionesMenuParametrizacion = {
         "1": {"Descripcion": "Partidos Politicos", "Funcion": MenuGenerico, "Menu": opcionesABM},
@@ -1015,6 +967,7 @@ def main():
         "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
         "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia}
     }
+
 
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
