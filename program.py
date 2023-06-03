@@ -481,7 +481,7 @@ def main():
 
     def VerficacionSegundaVuelta(info):
         index = 1
-        for clave,reg in info.values():
+        for clave,reg in info.items():
             if clave!=0:
                 if index==1:
                     partido1 = reg
