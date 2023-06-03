@@ -151,7 +151,8 @@ def main():
             votos[clave] = element
 
     # funcion para alta de votos Automatica
-    def VotacionAltaAutomaticaSegundaVuelta():
+    def VotacionAltaAutomaticaSegundaVuelta(partido_1, partido_2):
+# INGRESA LA CANTIDAD DE VOTOS POR PANTALLA DE SELECCIÓN
         cantRegistros = input("Por favor, Ingrese la Cantidad de Votos => ")
         while not str(cantRegistros).isdigit():
             if cantRegistros.lower() in {"volver", "volver atras"}:
@@ -159,6 +160,7 @@ def main():
             cantRegistros = input("Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
         
         global deDondeVengo
+# 
         for i in range(int(cantRegistros)):
             element = {}
             dato = str(random.randint(1, 999999999))
@@ -854,7 +856,7 @@ def main():
     opcionesMenuVotacionAlta = {
         "1": {"Descripcion": "Automatica", "Funcion": VotacionAltaAutomatica},
         "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual},
-        "3": {"Descripcion": "Votos Segunda Vuelta", "Funcion": VotacionAltaAutomaticaSegundaVuelta}
+        "3": {"Descripcion": "Votos Segunda Vuelta", "Funcion": VotacionAltaAutomaticaSegundaVuelta(1, 5)}
     }
 
     opcionesEscrutino = {
