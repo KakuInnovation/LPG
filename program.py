@@ -150,6 +150,57 @@ def main():
 
             votos[clave] = element
 
+    # funcion para alta de votos Automatica
+    def VotacionAltaAutomaticaSegundaVuelta():
+        cantRegistros = input("Por favor, Ingrese la Cantidad de Votos => ")
+        while not str(cantRegistros).isdigit():
+            if cantRegistros.lower() in {"volver", "volver atras"}:
+                return
+            cantRegistros = input("Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
+        
+        global deDondeVengo
+        for i in range(int(cantRegistros)):
+            element = {}
+            dato = str(random.randint(1, 999999999))
+            while not str(dato).isdigit() or not 0 < int(dato) <= 999999999 or not ValidacionDNI(dato):
+                dato = str(random.randint(1, 999999999))
+            element["Dni"] = str(dato)
+        
+            datoVotos = ValidacionVotosPrevios(dato)
+            if datoVotos != {}:
+                element["Provincia"] = next(iter(datoVotos.values()))["Provincia"]
+            else:
+                dato = random.choice(list(listaProvincias.keys()))
+                element["Provincia"] = str(dato)
+
+            while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+                dato = random.choice(list(opcionesCargos.keys()))
+            element["Cargo"] = str(dato)
+
+            dato = str(random.randint(0, len(listaPartidosPoliticos)))
+            if dato != "0":
+                claves = list(listaPartidosPoliticos.keys())
+                dato = claves[int(dato) - 1]
+                
+            element["Partido"] = str(dato)
+
+            if votos == {}:
+                clave = 1
+            else:
+                clave = max(votos.keys()) + 1
+
+            textoEscribir = ""
+            totalElementos = len(element)
+            indiceActual = 0
+            for propiedad, valor in element.items():
+                indiceActual += 1
+                textoEscribir += str(propiedad) + ": " + str(valor)
+                if indiceActual != totalElementos:
+                    textoEscribir += " / "
+            print(str(clave) + ")", textoEscribir)
+
+            votos[clave] = element
+
     # Funcion para mostrar los porcentajes
     def PorcentajeVotacion(esDescarga=False):
         if len(votos) == 0:
@@ -802,7 +853,8 @@ def main():
 
     opcionesMenuVotacionAlta = {
         "1": {"Descripcion": "Automatica", "Funcion": VotacionAltaAutomatica},
-        "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual}
+        "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual},
+        "3": {"Descripcion": "Votos Segunda Vuelta", "Funcion": VotacionAltaAutomaticaSegundaVuelta}
     }
 
     opcionesEscrutino = {
