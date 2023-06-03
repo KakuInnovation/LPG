@@ -20,7 +20,6 @@ UADE Copa Algoritmia 2023
 - Es muy posible por un error en nuestro diseño las probilidades de voto en blanco sean mas alta a la realidad.
 - Una vez realizado el Balotaje (Segunda vuelta) no se podra agregar mas Votos.
 
-
 ## Funcionamiento
 - Menus: Nuestro Programa esta usando menus de consola para acceder a todas las funcionalidad. 
     Este funciona de la siguente manera:
@@ -49,5 +48,7 @@ UADE Copa Algoritmia 2023
         -Alta de votos: aqui podemos simular la creacion de votos, aqui no contamos con Modificacion, Baja ni Ver para simular un funcionamiento mas realista. Aunque si mostramos el voto al momento de la carga para tener de registro.
             -Manual: Permite simular de forma manual toda la carga de un voto y confirmarlo para subirlo
             -Automatica: Establecemos una cantidad de votos y se generan automaticamente. 
+        -Al cargar los votos de la eleccion presidencial se haran el porcentaje y las validaciones para el Balotaje (Segunda Vuelta).
+        -En caso de ir a Balotaje (Segunda Vuelta) se cargaran nuevos votos y se validaran los porcentajes de los votos totales.
             Adevertencia: 
         -Escrutinio: Aqui podemos ver y descargar los resultados de las votaciones. Tambien hemos sumado para que se pueda ver las elecciones presidenciales de todas las provincias y la ciudad de Buenos Aires
