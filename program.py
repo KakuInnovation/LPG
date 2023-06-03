@@ -168,8 +168,15 @@ def main():
             cantRegistros = input(
                 "Numero invalido, por favor Ingrese la Cantidad de Votos Nuevamente")
 
-        global deDondeVengo
-#
+#        global deDondeVengo
+
+# Se tiene en cuenta sólo los partidos del balotaje
+            listaPartidosPoliticosSegundaVuelta = {}
+            listaPartidosPoliticosSegundaVuelta = listaPartidosPoliticos.keys(
+                partido_1)
+            listaPartidosPoliticosSegundaVuelta = listaPartidosPoliticos.keys(
+                partido_2)
+
         for i in range(int(cantRegistros)):
             element = {}
             dato = str(random.randint(1, 999999999))
@@ -179,21 +186,16 @@ def main():
             element["Dni"] = str(dato)
 # Valida si el DNI ya votó
             datoVotos = ValidacionVotosPrevios(dato)
-# Selecciona una Provincia al azar
-            if datoVotos != {}:
-                element["Provincia"] = next(
-                    iter(datoVotos.values()))["Provincia"]
-            else:
-                dato = random.choice(list(listaProvincias.keys()))
-                element["Provincia"] = str(dato)
+
 # Selecciona al azar un Cargo - SÓLAMENTE APLICA A PRESIDENTE Y VICEPRESIDENTE
-            while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-                dato = random.choice(list(opcionesCargos.keys()))
+            while not dato in opcionesCargosSegundaVuelta.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+                dato = random.choice(list(opcionesCargosSegundaVuelta.keys()))
             element["Cargo"] = str(dato)
-# Selecciona el partido político
-            dato = str(random.randint(0, len(listaPartidosPoliticos)))
+
+            dato = str(random.randint(
+                0, len(listaPartidosPoliticosSegundaVuelta)))
             if dato != "0":
-                claves = list(listaPartidosPoliticos.keys())
+                claves = list(listaPartidosPoliticosSegundaVuelta.keys())
                 dato = claves[int(dato) - 1]
 
             element["Partido"] = str(dato)
@@ -213,7 +215,7 @@ def main():
                     textoEscribir += " / "
             print(str(clave) + ")", textoEscribir)
 
-            votos[clave] = element
+            votosSegundaVuelta[clave] = element
 
     # Funcion para mostrar los porcentajes
 
@@ -478,38 +480,6 @@ def main():
                     else:
                         return True
         return False
-
-    def VerficacionSegundaVuelta(info):
-        index = 1
-        for clave,reg in info.values():
-            if clave!=0:
-                if index==1:
-                    partido1 = reg
-                    index+=1
-                elif index==2:
-                    partido2 = reg
-                    break
-        partido1Porcentaje = partido1["Porcentaje"][:-1]
-        partido1Porcentaje = float(partido1["Porcentaje"][:-1])
-        partido2Porcentaje = float(partido2["Porcentaje"][:-1])
-
-        diferencia = partido1Porcentaje - partido2Porcentaje
-        if diferencia < 0:
-            diferencia *= -1
-        
-        if diferencia>5 and partido1Porcentaje>40:
-            print(f"El partido",partido1["Partido"],"ha ganado las elecciones")
-
-        elif diferencia>5 and partido1Porcentaje>40:
-            print(f"El partido",partido2["Partido"],"ha ganado las elecciones")
-        else:
-            #if 
-            print("Se Requiere una Segunda Vuelta")
-
-        input("Pulse Enter para Continuar ")
-
-        #if float(partido1["Porcentaje"]) 
-
 
     # funcion para validar cada dato d e las altas
     def ValidacionesCampo(dato, campo, tipo, claveElemento=""):
@@ -861,8 +831,6 @@ def main():
         info = PorcentajeVotacionPresidencia(True)
         WriteArchivoVotacion(info)
 
-        VerficacionSegundaVuelta(info)
-
     def WriteArchivoVotacion(info):
         if info != None:
             datosTexto = ""
@@ -905,6 +873,12 @@ def main():
         "3": {"Descripcion": "Senador"},
         "4": {"Descripcion": "Gobernador y Vicegobernador"}
     }
+
+# Aplica el Diccionario sólo para la segunda vuelta
+    opcionesCargosSegundaVuelta = {
+        "1": {"Descripcion": "Presidente y Vicepresidente"}
+    }
+
     # Diccionario de opciones y Funciones asociadas Menu Parametizacion
     opcionesMenuParametrizacion = {
         "1": {"Descripcion": "Partidos Politicos", "Funcion": MenuGenerico, "Menu": opcionesABM},
@@ -929,9 +903,8 @@ def main():
         "2": {"Descripcion": "Ver Porcentaje Presidencial Nacional", "Funcion": PorcentajeVotacionPresidencia},
         "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
         "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia},
-        "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta" }
+        "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta"}
     }
-
 
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
