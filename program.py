@@ -484,13 +484,16 @@ def main():
 
     def VerficacionSegundaVuelta(info, esdescarga=False):
         index = 1
-        for clave,reg in info.items():
-            if clave!=0:
-                if index==1:
+        balotaje = {}
+        for clave, reg in info.items():
+            if clave != 0:
+                if index == 1:
                     partido1 = reg
                     index += 1
+                    balotaje[clave] = reg
                 elif index == 2:
                     partido2 = reg
+                    balotaje[clave] = reg
                     break
         partido1Porcentaje = partido1["Porcentaje"][:-1]
         partido1Porcentaje = float(partido1["Porcentaje"][:-1])
@@ -517,8 +520,7 @@ def main():
                 print(f"Los partidos", partido1["Partido"],
                       "y", partido2["Partido"], "iran a Balotage")
                 input("Presione Enter para Continuar")
-
-                VotacionAltaAutomaticaSegundaVuelta({partido1, partido2})
+                VotacionAltaAutomaticaSegundaVuelta(balotaje)
                 resultadoSegundaVuelta = PorcetajeSegundaVuelta()
 
         # if float(partido1["Porcentaje"])
@@ -777,7 +779,6 @@ def main():
             if deDondeVengo == "Alta de Votos" and len(votosSegundaVuelta) != 0:
                 print("Ya ha pasado el tiempo de Votacion")
                 input("Pulse Enter para Continuar ")
-                
 
             # solicitamos opcion
             seleccion = input("Por favor, selecciona una opcion => ")
@@ -967,7 +968,6 @@ def main():
         "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
         "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia}
     }
-
 
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
