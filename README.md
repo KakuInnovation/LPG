@@ -18,6 +18,8 @@ UADE Copa Algoritmia 2023
 - No se aclara en la funcionalidad si el voto en blanco debe ser añadido al archivo, nosotros lo hemos añadido y se ordena automaticamente tambien.
 - Hemos acortado los porcentajes de las votaciones a 2 decimales.
 - Es muy posible por un error en nuestro diseño las probilidades de voto en blanco sean mas alta a la realidad.
+- Una vez realizado el Balotaje (Segunda vuelta) no se podra agregar mas Votos.
+
 
 ## Funcionamiento
 - Menus: Nuestro Programa esta usando menus de consola para acceder a todas las funcionalidad. 
