@@ -464,12 +464,12 @@ def main():
             sorted(elements.items(), key=lambda x: x[1]["Cantidad Votos"], reverse=True))
         index = 1
         for clave, element in elements.items():
-            if element["Cantidad Votos"] !=0:
+            if element["Cantidad Votos"] != 0:
                 porcentaje = element["Cantidad Votos"] * 100 / votosTotales
                 porcentaje = "{:.2f}".format(porcentaje) + "%"
                 if clave != "0":
                     print(str(index) + ")", element["Partido"] + ":",
-                        porcentaje, "con", element["Cantidad Votos"], "Votos")
+                          porcentaje, "con", element["Cantidad Votos"], "Votos")
                     index += 1
                 element["Porcentaje"] = porcentaje
         print("---------------------------------------------------------------------------------------------------------------")
@@ -608,8 +608,7 @@ def main():
             resultadoSegundaVuelta = PorcentajeVotacionSegundaVuelta(
                 esdescarga)
             if esdescarga == True:
-                WriteArchivoVotacion(resultadoSegundaVuelta)
-                
+                WriteArchivoVotacionSegundaVuelta(resultadoSegundaVuelta)
 
         # if float(partido1["Porcentaje"])
 
@@ -1002,6 +1001,30 @@ def main():
                             ";" + reg["Porcentaje"] + "\n"
                         str(registro)
                         f.write(registro)
+            except:
+                print("Error al escribir el Archivo")
+            finally:
+                f.close()
+                input("Pulse Enter para Continuar ")
+                print("Archivo Generado")
+
+    def WriteArchivoVotacionSegundaVuelta(info):
+        if info != None:
+            del info["DatosNombreArchivo"]
+
+            filevotacion = 'db/votacionPresidencialesSegundaVuelta.csv'
+            f = open(filevotacion, 'w', encoding='UTF-8')
+
+            try:
+                for reg in info.values():
+                    if reg["PartidoCodigo"] != "0":
+                        if reg["Cantidad Votos"] > 0:
+                            registro = "Nacionales" + ";" + \
+                                reg["PartidoCodigo"] + ";" + \
+                                str(reg["Cantidad Votos"]) + \
+                                ";" + reg["Porcentaje"] + "\n"
+                            str(registro)
+                            f.write(registro)
             except:
                 print("Error al escribir el Archivo")
             finally:
