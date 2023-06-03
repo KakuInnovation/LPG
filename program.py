@@ -350,6 +350,52 @@ def main():
             elements["DatosNombreArchivo"] = element
             return elements
 
+    def PorcetajeSegundaVuelta(esDescarga=False):
+        votosTotales = 0
+        elements = {}
+        for clave, partido in listaPartidosPoliticos.items():
+            element = {}
+            element["Partido"] = partido["Nombre"]
+            element["PartidoCodigo"] = clave
+            element["Cantidad Votos"] = 0
+            elements[clave] = element
+
+        if len(elements) != 0:
+            element = {}
+            element["Partido"] = "VOTO EN BLANCO"
+            element["Cantidad Votos"] = 0
+            element["PartidoCodigo"] = "0"
+            elements["0"] = element
+
+        for clave, element in votosSegundaVuelta.items():
+            for clave2, element2 in elements.items():
+                if str(clave2) == str(element["Partido"]):
+                    element2["Cantidad Votos"] += 1
+                    break
+
+            votosTotales += 1
+
+        if votosTotales == 0:
+            print("No hay Votos para Presidencia Aun")
+            input("Pulse Enter para Continuar ")
+            return None
+        cargoTexto = opcionesCargos.get(
+            str("1"), {}).get("Descripcion", None)
+
+        elements = MuestraYCalculoDePorcentajes(
+            elements, votosTotales, cargoTexto)
+
+        if esDescarga == False:
+            input("Pulse Enter para Continuar ")
+            return
+        else:
+            element = {}
+            element["Provincia"] = "Nacionales"
+            element["ProvinciaCodigo"] = "Nacionales"
+            element["Cargo"] = cargoTexto
+            elements["DatosNombreArchivo"] = element
+            return elements
+
     def MuestraYCalculoDePorcentajes(elements, votosTotales, cargoTexto, provinciaTexto="Nacionales"):
         print("Region:", provinciaTexto)
         print("---------------------------------------------------------------------------------------------------------------")
@@ -479,7 +525,7 @@ def main():
                         return True
         return False
 
-    def VerficacionSegundaVuelta(info):
+    def VerficacionSegundaVuelta(info, esdescarga = False):
         index = 1
         for clave,reg in info.values():
             if clave!=0:
@@ -499,14 +545,22 @@ def main():
         
         if diferencia>5 and partido1Porcentaje>40:
             print(f"El partido",partido1["Partido"],"ha ganado las elecciones")
-
+            print("No es Necesaria Segunda Vuelta")
+            input("Pulse Enter para Continuar ")
         elif diferencia>5 and partido1Porcentaje>40:
             print(f"El partido",partido2["Partido"],"ha ganado las elecciones")
+            print("No es Necesaria Segunda Vuelta")
+            input("Pulse Enter para Continuar ")
         else:
-            #if 
-            print("Se Requiere una Segunda Vuelta")
+            if votosSegundaVuelta != {}:
+                print("Mostrar quien gano")
+            else:
+                print(f"Los partidos", partido1["Partido"],"y", partido2["Partido"], "iran a Balotage")
+                input("Presione Enter para Continuar")
+                VotacionAltaAutomaticaSegundaVuelta()
+                resultadoSegundaVuelta = PorcetajeSegundaVuelta()
 
-        input("Pulse Enter para Continuar ")
+        
 
         #if float(partido1["Porcentaje"]) 
 
@@ -861,6 +915,10 @@ def main():
         info = PorcentajeVotacionPresidencia(True)
         WriteArchivoVotacion(info)
 
+        VerficacionSegundaVuelta(info, True)
+
+    def getInfoArchivoVotacionPresidencia():
+        info = PorcentajeVotacionPresidencia()
         VerficacionSegundaVuelta(info)
 
     def WriteArchivoVotacion(info):
@@ -932,7 +990,6 @@ def main():
         "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta" }
     }
 
-
     opcionesMenuPrincipal = {
         "1": {"Descripcion": "Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuParametrizacion},
         "2": {"Descripcion": "Descarga de Archivos de Parametrizacion", "Funcion": MenuGenerico, "Menu": opcionesMenuDescargaArchivos},
@@ -941,7 +998,7 @@ def main():
     }
 
     votos = {}
-    votosSegundaVuelata = {}
+    votosSegundaVuelta = {}
 
     # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
     listaPartidosPoliticos = {
