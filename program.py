@@ -155,9 +155,13 @@ def main():
             votos[clave] = element
 
     # funcion para alta de votos Automatica
-    def VotacionAltaAutomaticaSegundaVuelta(partido_1, partido_2):
+    def VotacionAltaAutomaticaSegundaVuelta():
+        partido_1 = 2
+        partido_2 = 5
+
         # INGRESA LA CANTIDAD DE VOTOS POR PANTALLA DE SELECCIÓN
         cantRegistros = input("Por favor, Ingrese la Cantidad de Votos => ")
+# Valida que se ingrese un número
         while not str(cantRegistros).isdigit():
             if cantRegistros.lower() in {"volver", "volver atras"}:
                 return
@@ -169,22 +173,24 @@ def main():
         for i in range(int(cantRegistros)):
             element = {}
             dato = str(random.randint(1, 999999999))
+# Si no es numérico negativo o DNI duplicado
             while not str(dato).isdigit() or not 0 < int(dato) <= 999999999 or not ValidacionDNI(dato):
                 dato = str(random.randint(1, 999999999))
             element["Dni"] = str(dato)
-
+# Valida si el DNI ya votó
             datoVotos = ValidacionVotosPrevios(dato)
+# Selecciona una Provincia al azar
             if datoVotos != {}:
                 element["Provincia"] = next(
                     iter(datoVotos.values()))["Provincia"]
             else:
                 dato = random.choice(list(listaProvincias.keys()))
                 element["Provincia"] = str(dato)
-
+# Selecciona al azar un Cargo - SÓLAMENTE APLICA A PRESIDENTE Y VICEPRESIDENTE
             while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
                 dato = random.choice(list(opcionesCargos.keys()))
             element["Cargo"] = str(dato)
-
+# Selecciona el partido político
             dato = str(random.randint(0, len(listaPartidosPoliticos)))
             if dato != "0":
                 claves = list(listaPartidosPoliticos.keys())
@@ -210,6 +216,7 @@ def main():
             votos[clave] = element
 
     # Funcion para mostrar los porcentajes
+
     def PorcentajeVotacion(esDescarga=False):
         if len(votos) == 0:
             print("Aun no hay Votos Cargados")
@@ -880,7 +887,7 @@ def main():
     opcionesMenuVotacionAlta = {
         "1": {"Descripcion": "Automatica", "Funcion": VotacionAltaAutomatica},
         "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual},
-        "3": {"Descripcion": "Votos Segunda Vuelta", "Funcion": VotacionAltaAutomaticaSegundaVuelta(1, 5)}
+        "3": {"Descripcion": "Votos Segunda Vuelta", "Funcion": VotacionAltaAutomaticaSegundaVuelta}
     }
 
     opcionesEscrutino = {
@@ -899,6 +906,7 @@ def main():
     }
 
     votos = {}
+    votosSegundaVuelata = {}
 
     # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
     listaPartidosPoliticos = {
