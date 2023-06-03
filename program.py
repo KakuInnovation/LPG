@@ -906,7 +906,7 @@ def main():
     }
 
     votos = {}
-    votosSegundaVuelata = {}
+    votosSegundaVuelta = {}
 
     # Diccionario de partidos politicos la clave es el numero y el resto son sus datos (nombre abreviatura)
     listaPartidosPoliticos = {
