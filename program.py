@@ -606,7 +606,8 @@ def main():
                 VotacionAltaAutomaticaSegundaVuelta(balotaje)
             resultadoSegundaVuelta = PorcentajeVotacionSegundaVuelta(esdescarga)
             if esdescarga == True:
-                print("decargar")
+                WriteArchivoVotacion(resultadoSegundaVuelta)
+                
 
         # if float(partido1["Porcentaje"])
 
