@@ -518,7 +518,7 @@ def main():
                 print("Mostrar quien gano")
             else:
                 print(f"Los partidos", partido1["Partido"],
-                      "y", partido2["Partido"], "iran a Balotage")
+                      "y", partido2["Partido"], "iran a balotaje")
                 input("Presione Enter para Continuar")
                 VotacionAltaAutomaticaSegundaVuelta(balotaje)
                 resultadoSegundaVuelta = PorcetajeSegundaVuelta()
