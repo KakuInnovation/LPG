@@ -155,10 +155,7 @@ def main():
             votos[clave] = element
 
     # funcion para alta de votos Automatica
-    def VotacionAltaAutomaticaSegundaVuelta():
-        partido_1 = 2
-        partido_2 = 5
-
+    def VotacionAltaAutomaticaSegundaVuelta(balotaje):
         # INGRESA LA CANTIDAD DE VOTOS POR PANTALLA DE SELECCIÓN
         cantRegistros = input("Por favor, Ingrese la Cantidad de Votos => ")
 # Valida que se ingrese un número
@@ -171,21 +168,26 @@ def main():
 #        global deDondeVengo
 
 # Se tiene en cuenta sólo los partidos del balotaje
-            listaPartidosPoliticosSegundaVuelta = {}
-            listaPartidosPoliticosSegundaVuelta = listaPartidosPoliticos.keys(
-                partido_1)
-            listaPartidosPoliticosSegundaVuelta = listaPartidosPoliticos.keys(
-                partido_2)
+        listaPartidosPoliticosSegundaVuelta = {}
+        listaPartidosPoliticosSegundaVuelta = balotaje
 
         for i in range(int(cantRegistros)):
             element = {}
-            dato = str(random.randint(1, 999999999))
+            votoNoPermitido = True
+
 # Si no es numérico negativo o DNI duplicado
-            while not str(dato).isdigit() or not 0 < int(dato) <= 999999999 or not ValidacionDNI(dato):
+            while votoNoPermitido == True:
                 dato = str(random.randint(1, 999999999))
+                votoNoPermitido = ValidacionVotosSegundaVuelta(dato)
             element["Dni"] = str(dato)
-# Valida si el DNI ya votó
+
             datoVotos = ValidacionVotosPrevios(dato)
+            if datoVotos != {}:
+                element["Provincia"] = next(
+                    iter(datoVotos.values()))["Provincia"]
+            else:
+                dato = random.choice(list(listaProvincias.keys()))
+                element["Provincia"] = str(dato)
 
 # Selecciona al azar un Cargo - SÓLAMENTE APLICA A PRESIDENTE Y VICEPRESIDENTE
             while not dato in opcionesCargosSegundaVuelta.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
@@ -527,14 +529,14 @@ def main():
                         return True
         return False
 
-    def VerficacionSegundaVuelta(info, esdescarga = False):
+    def VerficacionSegundaVuelta(info, esdescarga=False):
         index = 1
-        for clave,reg in info.values():
-            if clave!=0:
-                if index==1:
+        for clave, reg in info.values():
+            if clave != 0:
+                if index == 1:
                     partido1 = reg
-                    index+=1
-                elif index==2:
+                    index += 1
+                elif index == 2:
                     partido2 = reg
                     break
         partido1Porcentaje = partido1["Porcentaje"][:-1]
@@ -544,30 +546,32 @@ def main():
         diferencia = partido1Porcentaje - partido2Porcentaje
         if diferencia < 0:
             diferencia *= -1
-        
-        if diferencia>5 and partido1Porcentaje>40:
-            print(f"El partido",partido1["Partido"],"ha ganado las elecciones")
+
+        if diferencia > 5 and partido1Porcentaje > 40:
+            print(f"El partido", partido1["Partido"],
+                  "ha ganado las elecciones")
             print("No es Necesaria Segunda Vuelta")
             input("Pulse Enter para Continuar ")
-        elif diferencia>5 and partido1Porcentaje>40:
-            print(f"El partido",partido2["Partido"],"ha ganado las elecciones")
+        elif diferencia > 5 and partido1Porcentaje > 40:
+            print(f"El partido", partido2["Partido"],
+                  "ha ganado las elecciones")
             print("No es Necesaria Segunda Vuelta")
             input("Pulse Enter para Continuar ")
         else:
             if votosSegundaVuelta != {}:
                 print("Mostrar quien gano")
             else:
-                print(f"Los partidos", partido1["Partido"],"y", partido2["Partido"], "iran a Balotage")
+                print(f"Los partidos", partido1["Partido"],
+                      "y", partido2["Partido"], "iran a Balotage")
                 input("Presione Enter para Continuar")
-                VotacionAltaAutomaticaSegundaVuelta()
+
+                VotacionAltaAutomaticaSegundaVuelta({partido1, partido2})
                 resultadoSegundaVuelta = PorcetajeSegundaVuelta()
 
-        
-
-        #if float(partido1["Porcentaje"]) 
-
+        # if float(partido1["Porcentaje"])
 
     # funcion para validar cada dato d e las altas
+
     def ValidacionesCampo(dato, campo, tipo, claveElemento=""):
         global deDondeVengo
         flag = False
@@ -873,7 +877,7 @@ def main():
         return elements
 
     def ValidacionVotosSegundaVuelta(dni):
-        for clave, element in votos.items():
+        for clave, element in votosSegundaVuelta.items():
             if str(element["Dni"]) == str(dni):
                 return True
         return False
@@ -922,12 +926,13 @@ def main():
         print("Descargado Votaciones...")
         info = PorcentajeVotacionPresidencia(True)
         WriteArchivoVotacion(info)
+        if info != None:
+            VerficacionSegundaVuelta(info, True)
 
-        VerficacionSegundaVuelta(info, True)
-
-    def getInfoArchivoVotacionPresidencia():
-        info = PorcentajeVotacionPresidencia()
-        VerficacionSegundaVuelta(info)
+    def getPorcentajeVotacionPresidencia():
+        info = PorcentajeVotacionPresidencia(True)
+        if info != None:
+            VerficacionSegundaVuelta(info)
 
     def WriteArchivoVotacion(info):
         if info != None:
@@ -990,18 +995,25 @@ def main():
         "3": {"Descripcion": "Votaciones",  "Funcion": WriteArchivoVotacion}
     }
 
+    listaPartidosPoliticos1 = {
+        "1": {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Lista": "1"},
+        "2": {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Lista": "2"},
+        "3": {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Lista": "3"},
+        "4": {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Lista": "4"},
+        "5": {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Lista": "5"},
+        "6": {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Lista": "6"},
+    }
+
     opcionesMenuVotacionAlta = {
         "1": {"Descripcion": "Automatica", "Funcion": VotacionAltaAutomatica},
-        "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual},
-        "3": {"Descripcion": "Votos Segunda Vuelta", "Funcion": VotacionAltaAutomaticaSegundaVuelta}
+        "2": {"Descripcion": "Manual", "Funcion": VotacionAltaManual}
     }
 
     opcionesEscrutino = {
         "1": {"Descripcion": "Ver Porcentajes Por Region", "Funcion": PorcentajeVotacion},
-        "2": {"Descripcion": "Ver Porcentaje Presidencial Nacional", "Funcion": PorcentajeVotacionPresidencia},
+        "2": {"Descripcion": "Ver Porcentaje Presidencial Nacional", "Funcion": getPorcentajeVotacionPresidencia},
         "3": {"Descripcion": "Descargar Votacion Por Region", "Funcion": getInfoArchivoVotacionRegional},
-        "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia},
-        "5": {"Descripcion": "Descargar Votacion Presidencial Nacional Segunda Vuelta"}
+        "4": {"Descripcion": "Descargar Votacion Presidencial Nacional Primera Vuelta", "Funcion": getInfoArchivoVotacionPresidencia}
     }
 
     opcionesMenuPrincipal = {
