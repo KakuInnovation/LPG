@@ -299,6 +299,50 @@ def main():
             elements["DatosNombreArchivo"] = element
             return elements
 
+
+    def PorcentajeVotacionSegundaVuelta(esDescarga=False):
+        cargo = "1"
+        votosTotales = 0
+        elements = {}
+        for clave, partido in listaPartidosPoliticos.items():
+            element = {}
+            element["Partido"] = partido["Nombre"]
+            element["PartidoCodigo"] = clave
+            element["Cantidad Votos"] = 0
+            elements[clave] = element
+
+        if len(elements) != 0:
+            element = {}
+            element["Partido"] = "VOTO EN BLANCO"
+            element["Cantidad Votos"] = 0
+            element["PartidoCodigo"] = "0"
+            elements["0"] = element
+
+        for clave, element in votosSegundaVuelta.items():
+            for clave2, element2 in elements.items():
+                if str(clave2) == str(element["Partido"]):
+                    element2["Cantidad Votos"] += 1
+                    break
+
+            votosTotales += 1
+
+        cargoTexto = opcionesCargos.get(
+            str(cargo), {}).get("Descripcion", None)
+
+        elements = MuestraYCalculoDePorcentajesSegundaVuelta(
+            elements, votosTotales, cargoTexto)
+
+        if esDescarga == False:
+            input("Pulse Enter para Continuar ")
+            return
+        else:
+            element = {}
+            element["Provincia"] = "Nacionales"
+            element["ProvinciaCodigo"] = "Nacionales"
+            element["Cargo"] = cargoTexto
+            elements["DatosNombreArchivo"] = element
+            return elements
+    
     # Funcion para mostrar los porcentajes Presidencia de todaas las provincias
     def PorcentajeVotacionPresidencia(esDescarga=False):
         if len(votos) == 0:
@@ -358,6 +402,47 @@ def main():
         print("Region:", provinciaTexto)
         print("---------------------------------------------------------------------------------------------------------------")
         print("Elecciones Generales 2023")
+        print("---------------------------------------------------------------------------------------------------------------")
+        print("Categoria:", cargoTexto)
+        print("---------------------------------------------------------------------------------------------------------------")
+        cantidadVotosEnBlanco = elements.get(
+            ("0"), {}).get("Cantidad Votos", None)
+        porcentajeEnBlanco = cantidadVotosEnBlanco * 100 / votosTotales
+        porcentajePositivo = 100-porcentajeEnBlanco
+
+        porcentajeEnBlanco = "{:.2f}".format(porcentajeEnBlanco)
+        porcentajePositivo = "{:.2f}".format(porcentajePositivo)
+
+        votosPais = len(votos)
+        votosPais = votosTotales * 100 / votosPais
+        votosPais = "{:.2f}".format(votosPais)
+
+        print("Electrores Habilitados:", votosTotales,
+              "/ Porcentaje de Votos Totales:", votosPais + "%")
+        print("---------------------------------------------------------------------------------------------------------------")
+        elements = dict(
+            sorted(elements.items(), key=lambda x: x[1]["Cantidad Votos"], reverse=True))
+        index = 1
+        for clave, element in elements.items():
+            porcentaje = element["Cantidad Votos"] * 100 / votosTotales
+            porcentaje = "{:.2f}".format(porcentaje) + "%"
+            if clave != "0":
+                print(str(index) + ")", element["Partido"] + ":",
+                      porcentaje, "con", element["Cantidad Votos"], "Votos")
+                index += 1
+            element["Porcentaje"] = porcentaje
+        print("---------------------------------------------------------------------------------------------------------------")
+        print("Votos Positivos:", votosTotales -
+              cantidadVotosEnBlanco, "/", porcentajePositivo + "%")
+        print("Votos En Blanco:", cantidadVotosEnBlanco,
+              "/", porcentajeEnBlanco + "%")
+        print("Votos Totales:", votosTotales, "/", "100%")
+        return elements
+    
+    def MuestraYCalculoDePorcentajesSegundaVuelta(elements, votosTotales, cargoTexto, provinciaTexto="Nacionales"):
+        print("Region:", provinciaTexto)
+        print("---------------------------------------------------------------------------------------------------------------")
+        print("Elecciones Presidenciales 2023 - SegundaVuelta")
         print("---------------------------------------------------------------------------------------------------------------")
         print("Categoria:", cargoTexto)
         print("---------------------------------------------------------------------------------------------------------------")
@@ -487,7 +572,7 @@ def main():
         index = 1
         balotaje = {}
         for clave, reg in info.items():
-            if clave != 0:
+            if clave != "0":
                 if index == 1:
                     partido1 = reg
                     index += 1
@@ -515,14 +600,14 @@ def main():
             print("No es Necesaria Segunda Vuelta")
             input("Pulse Enter para Continuar ")
         else:
-            if votosSegundaVuelta != {}:
-                print("Mostrar quien gano")
-            else:
-                print(f"Los partidos", partido1["Partido"],
+            print(f"Los partidos", partido1["Partido"],
                       "y", partido2["Partido"], "iran a balotaje")
-                input("Presione Enter para Continuar")
+            input("Presione Enter para Continuar")
+            if votosSegundaVuelta == {}:
                 VotacionAltaAutomaticaSegundaVuelta(balotaje)
-                resultadoSegundaVuelta = PorcetajeSegundaVuelta()
+            resultadoSegundaVuelta = PorcentajeVotacionSegundaVuelta(esdescarga)
+            if esdescarga == True:
+                print("decargar")
 
         # if float(partido1["Porcentaje"])
 
