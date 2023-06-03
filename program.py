@@ -190,13 +190,14 @@ def main():
                 element["Provincia"] = str(dato)
 
 # Selecciona al azar un Cargo - SÓLAMENTE APLICA A PRESIDENTE Y VICEPRESIDENTE
-            while not dato in opcionesCargos.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
-                dato = random.choice(list(opcionesCargos.keys()))
+            while not dato in opcionesCargosSegundaVuelta.keys() and not (dato in [opcion["Cargo"] for opcion in datoVotos.values()]):
+                dato = random.choice(list(opcionesCargosSegundaVuelta.keys()))
             element["Cargo"] = str(dato)
 # Selecciona el partido político
-            dato = str(random.randint(0, len(listaPartidosPoliticos)))
+            dato = str(random.randint(
+                0, len(listaPartidosPoliticosSegundaVuelta)))
             if dato != "0":
-                claves = list(listaPartidosPoliticos.keys())
+                claves = list(listaPartidosPoliticosSegundaVuelta.keys())
                 dato = claves[int(dato) - 1]
 
             element["Partido"] = str(dato)
@@ -216,7 +217,7 @@ def main():
                     textoEscribir += " / "
             print(str(clave) + ")", textoEscribir)
 
-            votos[clave] = element
+            votosSegundaVuelta[clave] = element
 
     # Funcion para mostrar los porcentajes
 
@@ -935,6 +936,11 @@ def main():
         "3": {"Descripcion": "Senador"},
         "4": {"Descripcion": "Gobernador y Vicegobernador"}
     }
+
+    opcionesCargosSegundaVuelta = {
+        "1": {"Descripcion": "Presidente y Vicepresidente"}
+    }
+
     # Diccionario de opciones y Funciones asociadas Menu Parametizacion
     opcionesMenuParametrizacion = {
         "1": {"Descripcion": "Partidos Politicos", "Funcion": MenuGenerico, "Menu": opcionesABM},
@@ -946,15 +952,6 @@ def main():
         "1": {"Descripcion": "Partidos Politicos", "Funcion": DecargarPartidosPoliticos},
         "2": {"Descripcion": "Regiones Geograficas", "Funcion": DecargarRegionesGeograficas},
         "3": {"Descripcion": "Votaciones",  "Funcion": WriteArchivoVotacion}
-    }
-
-    listaPartidosPoliticos1 = {
-        "1": {"Nombre": "FRENTE DE TODOS", "Abreviatura": "FDT", "Lista": "1"},
-        "2": {"Nombre": "JUNTOS POR EL CAMBIO", "Abreviatura": "JXC", "Lista": "2"},
-        "3": {"Nombre": "LIBERTRAIOS", "Abreviatura": "LIB", "Lista": "3"},
-        "4": {"Nombre": "PERONISMO FEDERAL", "Abreviatura": "PFE", "Lista": "4"},
-        "5": {"Nombre": "FRENTE DE IZQUIERDA", "Abreviatura": "FDI", "Lista": "5"},
-        "6": {"Nombre": "LIBRES DEL SUR", "Abreviatura": "LBS", "Lista": "6"},
     }
 
     opcionesMenuVotacionAlta = {
