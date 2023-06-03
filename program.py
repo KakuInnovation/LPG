@@ -202,10 +202,10 @@ def main():
 
             element["Partido"] = str(dato)
 
-            if votos == {}:
+            if votosSegundaVuelta == {}:
                 clave = 1
             else:
-                clave = max(votos.keys()) + 1
+                clave = max(votosSegundaVuelta.keys()) + 1
 
             textoEscribir = ""
             totalElementos = len(element)
@@ -299,7 +299,6 @@ def main():
             elements["DatosNombreArchivo"] = element
             return elements
 
-
     def PorcentajeVotacionSegundaVuelta(esDescarga=False):
         cargo = "1"
         votosTotales = 0
@@ -342,7 +341,7 @@ def main():
             element["Cargo"] = cargoTexto
             elements["DatosNombreArchivo"] = element
             return elements
-    
+
     # Funcion para mostrar los porcentajes Presidencia de todaas las provincias
     def PorcentajeVotacionPresidencia(esDescarga=False):
         if len(votos) == 0:
@@ -438,7 +437,7 @@ def main():
               "/", porcentajeEnBlanco + "%")
         print("Votos Totales:", votosTotales, "/", "100%")
         return elements
-    
+
     def MuestraYCalculoDePorcentajesSegundaVuelta(elements, votosTotales, cargoTexto, provinciaTexto="Nacionales"):
         print("Region:", provinciaTexto)
         print("---------------------------------------------------------------------------------------------------------------")
@@ -465,13 +464,14 @@ def main():
             sorted(elements.items(), key=lambda x: x[1]["Cantidad Votos"], reverse=True))
         index = 1
         for clave, element in elements.items():
-            porcentaje = element["Cantidad Votos"] * 100 / votosTotales
-            porcentaje = "{:.2f}".format(porcentaje) + "%"
-            if clave != "0":
-                print(str(index) + ")", element["Partido"] + ":",
-                      porcentaje, "con", element["Cantidad Votos"], "Votos")
-                index += 1
-            element["Porcentaje"] = porcentaje
+            if element["Cantidad Votos"] !=0:
+                porcentaje = element["Cantidad Votos"] * 100 / votosTotales
+                porcentaje = "{:.2f}".format(porcentaje) + "%"
+                if clave != "0":
+                    print(str(index) + ")", element["Partido"] + ":",
+                        porcentaje, "con", element["Cantidad Votos"], "Votos")
+                    index += 1
+                element["Porcentaje"] = porcentaje
         print("---------------------------------------------------------------------------------------------------------------")
         print("Votos Positivos:", votosTotales -
               cantidadVotosEnBlanco, "/", porcentajePositivo + "%")
@@ -601,11 +601,12 @@ def main():
             input("Pulse Enter para Continuar ")
         else:
             print(f"Los partidos", partido1["Partido"],
-                      "y", partido2["Partido"], "iran a balotaje")
+                  "y", partido2["Partido"], "iran a balotaje")
             input("Presione Enter para Continuar")
             if votosSegundaVuelta == {}:
                 VotacionAltaAutomaticaSegundaVuelta(balotaje)
-            resultadoSegundaVuelta = PorcentajeVotacionSegundaVuelta(esdescarga)
+            resultadoSegundaVuelta = PorcentajeVotacionSegundaVuelta(
+                esdescarga)
             if esdescarga == True:
                 print("decargar")
 
